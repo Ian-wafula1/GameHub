@@ -12,3 +12,5 @@ class OrderItem(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, default=func.now())
     
     order = db.relationship('Order', back_populates='order_items')
+    
+    serialize_rules = ('-order.order_items',)

@@ -8,8 +8,10 @@ class Order(db.Model, SerializerMixin):
     status = db.Column(db.String, default='pending')
     updated_at = db.Column(db.DateTime, default=db.func.now())
     
-    users = db.relationship('User', back_populates='orders', lazy=True)
+    user = db.relationship('User', back_populates='orders', lazy=True)
     order_items = db.relationship('OrderItem', back_populates='order', lazy=True, cascade='all, delete-orphan')
+    
+    serialize_rules = ('-users.orders', '-order_items.order')
     
     @property
     def total_price(self):
