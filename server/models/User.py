@@ -2,6 +2,7 @@ from config import db, bcrypt
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
+from .UserGame import user_games
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -10,7 +11,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, nullable=False, unique=True)
     _password_hash = db.Column(db.String)
     
-    games = db.relationship('Game', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    games = db.relationship('Game', back_populates='users', lazy=True, secondary=user_games)
     orders = db.relationship('Order', back_populates='users', lazy=True, cascade='all, delete-orphan')
     
     @hybrid_property
