@@ -11,11 +11,9 @@ export default function SearchBar() {
     
     function handleSubmit(e) {
         e.preventDefault();
-        console.log(searchTerm);
         axios.get(`https://api.rawg.io/api/games?search=${searchTerm}&key=6c8e0c847dd14ebd88f23676a432f0fa`)
         .then(res => {
             setGames(res.data.results)
-            console.log(res.data)
             if (location.pathname !== '/store') {
                 navigate('/store')
             }
