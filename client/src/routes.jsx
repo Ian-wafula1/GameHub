@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import { Navigate } from "react-router-dom";
 import Store from "./pages/Store";
+import Game from "./pages/Game";
 
 const routes = [
     {
@@ -31,6 +32,10 @@ const routes = [
             {
                 path: "/store",
                 element: <Store />
+            },
+            {
+                path: "/game/:id",
+                element: <Game />
             },
             {
                 path: "*",
