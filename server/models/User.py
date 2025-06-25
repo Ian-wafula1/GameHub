@@ -8,6 +8,8 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=False, unique=True)
+    age = db.Column(db.Integer, nullable=True)
+    gender = db.Column(db.String, nullable=True)
     _password_hash = db.Column(db.String)
     
     games = db.relationship('Game', back_populates='users', lazy=True, cascade='all, delete-orphan')
