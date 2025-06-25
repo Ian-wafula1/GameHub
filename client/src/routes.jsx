@@ -9,14 +9,10 @@ const routes = [
     {
         path: "/",
         element: <App />,
-        errorElement: <div>404 Not Found</div>,
+        // errorElement: <div>404 Not Found</div>,
         children: [
             {
                 index: true,
-                element: <Home />
-            },
-            {
-                path: "/home",
                 element: <Home />
             },
             {
@@ -31,10 +27,10 @@ const routes = [
                 path: "/reset-password",
                 element: <ResetPassword />
             },
-            {
-                path: "*",
-                element: <Navigate to="/" />
-            }
+            // {
+            //     path: "*",
+            //     element: <Navigate to="/" />
+            // }
         ]
     },
 ];
