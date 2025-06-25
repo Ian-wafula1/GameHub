@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import { MyCheckbox, MySelect, MyTextInput } from '../utils/formElements';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Signup() {
 
@@ -37,7 +37,7 @@ export default function Signup() {
                     }).then(res => {
                         console.log(res)
                         navigate('/login')
-                    })
+                    }).catch(err => console.log(err))
                     setSubmitting(false);
                     // axios.get('/api/users').then(res=> console.log(res))
 				}}>
@@ -56,6 +56,7 @@ export default function Signup() {
                         <button type="submit">Submit</button>
                     </Form>
                 </Formik>
+                <Link to="/login">Already have an account? Log in here</Link>
 		</>
 	);
 }
