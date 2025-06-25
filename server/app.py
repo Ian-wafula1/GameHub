@@ -9,7 +9,7 @@ import datetime
 class Login(Resource):
     def post(self):
         data = request.get_json()
-        if not (data['username'] and data['password']):
+        if not (data.get('username') and data.get('password')):
             return make_response({'error': 'Missing username or password'}, 400)
         
         user = User.query.filter_by(username=data['username']).first()
@@ -18,15 +18,20 @@ class Login(Resource):
             access_token = create_access_token(identity=user.username, expires_delta=datetime.timedelta(days=1))
             return {'access_token': access_token, 'user': user.to_dict()}, 200
         
-        return {'error': 'Invalid username or password'}, 401
+        response= make_response({'error': 'Invalid username or password'}, 401) 
+        response.message = 'Invalid username or password'
+        return response
     
 @api.route('/signup', endpoint='signup')
 class Signup(Resource):
     def post(self):
         data = request.get_json()
         
-        if not (data['username'] and data['email'] and data['password']):
-            return make_response({'error': 'Missing username, email, or password'}, 400)
+        keys = ('username', 'email', 'password', 'age', 'gender')
+        
+        for key in keys:
+            if key not in data.keys():
+                return make_response({'error': 'Invalid credentials'}, 400)
         
         if User.query.filter_by(username=data['username']).first():
             return make_response({'error': 'Username already exists'}, 400)
@@ -34,18 +39,33 @@ class Signup(Resource):
         if User.query.filter_by(email=data['email']).first():
             return make_response({'error': 'Email already exists'}, 400)
         
-        user = User(username=data['username'], email=data['email'])
+        user = User(username=data['username'], email=data['email'], age=data['age'], gender=data['gender'])
         user.password_hash = data['password']
         db.session.add(user)
         db.session.commit()
         return make_response(user.to_dict(), 201, {'Content-Type': 'application/json'})
     
+@api.route('/reset_password', endpoint='reset_password')
+class ResetPassword(Resource):
+    def post(self):
+        data = request.get_json()
+        if not (data.get('username') and data.get('password') and data.get('email')):
+            return make_response({'error': 'Invalid credentials'}, 400)
+        user = User.query.filter_by(username = data['username'], email=data['email']).first()
+        if not user:
+            return make_response({'error': 'User not found'}, 404)
+        user.password_hash = data['password']
+        db.session.add(user)
+        db.session.commit()
+        return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
+    
 @api.route('/users', endpoint='users')
 class Users(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
+        # return make_response({'test': 'test'}, 200, {'Content-Type': 'application/json'})
     
     @jwt_required()
     def patch(self):
