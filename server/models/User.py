@@ -12,8 +12,8 @@ class User(db.Model, SerializerMixin):
     gender = db.Column(db.String, nullable=True)
     _password_hash = db.Column(db.String)
     
-    games = db.relationship('Game', back_populates='users', lazy=True, cascade='all, delete-orphan')
-    orders = db.relationship('Order', back_populates='users', lazy=True, cascade='all, delete-orphan')
+    games = db.relationship('Game', back_populates='user', lazy=True, cascade='all, delete-orphan')
+    orders = db.relationship('Order', back_populates='user', lazy=True, cascade='all, delete-orphan')
     
     serialize_rules = ('-games.user', '-orders.user')
     
