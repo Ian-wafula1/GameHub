@@ -4,12 +4,13 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 import { Navigate } from "react-router-dom";
+import Store from "./pages/Store";
 
 const routes = [
     {
         path: "/",
         element: <App />,
-        // errorElement: <div>404 Not Found</div>,
+        errorElement: <div>404 Not Found</div>,
         children: [
             {
                 index: true,
@@ -27,10 +28,14 @@ const routes = [
                 path: "/reset-password",
                 element: <ResetPassword />
             },
-            // {
-            //     path: "*",
-            //     element: <Navigate to="/" />
-            // }
+            {
+                path: "/store",
+                element: <Store />
+            },
+            {
+                path: "*",
+                element: <Navigate to="/" />
+            }
         ]
     },
 ];

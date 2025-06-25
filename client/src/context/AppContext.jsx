@@ -4,7 +4,8 @@ const AppContext = createContext();
 
 function AppProvider({ children }) {
     const [searchTerm, setSearchTerm] = useState('');
-    return <AppContext.Provider value={{ searchTerm, setSearchTerm }} >{children}</AppContext.Provider>
+    const [games, setGames] = useState([])
+    return <AppContext.Provider value={{ searchTerm, setSearchTerm, games, setGames }} >{children}</AppContext.Provider>
 }
 
 export { AppContext, AppProvider }
