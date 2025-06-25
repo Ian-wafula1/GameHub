@@ -1,15 +1,14 @@
-// import getRandomPrice from "../utils/getRandomPrice"
+import getRandomPrice from "../utils/getRandomPrice"
 
-export default function GameCard() {
+export default function GameCard({game}) {
     return (
         <div>
-            {/* <h1>{game.name || 'Unlisted'}</h1>
+            <h1>{game.name || 'Unlisted'}</h1>
             <p>Platforms: {game?.parent_platforms?.map(platform => platform.name)?.join(', ') || 'Unlisted'}</p>
             <p>Price: ${game.price || getRandomPrice()}</p>
             <p>Genre: {game}</p>
             <p>Rating: {game.rating}</p>
-            <p>Release Date: {game.released}</p> */}
-            GameCard
+            <p>Release Date: {game.released}</p>
         </div>
     )
 }
