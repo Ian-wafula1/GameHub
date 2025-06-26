@@ -27,7 +27,7 @@ export default function Login() {
 							password: values.password,
 						})
 						.then((response) => {
-							let token = response.access_token;
+							let token = response.data.access_token;
 							localStorage.setItem('token', token);
                             navigate('/')
 						})

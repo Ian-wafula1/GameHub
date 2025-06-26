@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Game(){
-    const id = useParams()
+    let id = useParams()
+    id = id.id
     const navigate = useNavigate()
 
     if (!id || !localStorage.getItem('token')) {
@@ -121,14 +122,15 @@ export default function Game(){
             }
         }).catch(err => console.log(err))
     }
+    console.log(game)
     return (
         <div>
-            <img src={game.background_image} alt={game.name} />
-            <h1>{game.name || 'Unlisted'}</h1>
-            <p>Description: {game.description_raw || 'Unlisted'}</p>
-            <p>Website: {game.website || 'Unlisted'}</p>
-            <p>Released: {game.released || 'Unlisted'}</p>
-            <p>Genres: {game.genres?.map(genre => genre.name)?.join(', ') || 'Unlisted'}</p>
+            <img src={game?.background_image} alt={game?.name || 'Unlisted'} />
+            <h1>{game?.name || 'Unlisted'}</h1>
+            <p>Description: {game?.description_raw || 'Unlisted'}</p>
+            <p>Website: {game?.website || 'Unlisted'}</p>
+            <p>Released: {game?.released || 'Unlisted'}</p>
+            <p>Genres: {game?.genres?.map(genre => genre.name)?.join(', ') || 'Unlisted'}</p>
             <p>Platforms: {game?.parent_platforms?.map(platform => platform.name)?.join(', ') || 'Unlisted'}</p>
             <p>Developers: {game?.developers?.map(developer => developer.name)?.join(', ') || 'Unlisted'}</p>
             <p>Publishers: {game?.publishers?.map(publisher => publisher.name)?.join(', ') || 'Unlisted'}</p>

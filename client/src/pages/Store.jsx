@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../context/AppContext';
 // import getRandomPrice from '../utils/getRandomPrice';
 import GameCard from '../components/GameCard';
@@ -7,6 +7,7 @@ import fetchGenre from '../utils/fetchGenre';
 import fetchTop from '../utils/fetchTop';
 import { useNavigate } from 'react-router-dom';
 import fetchSaved from '../utils/fetchSaved';
+import axios from 'axios';
 
 const platforms = [
 	['PC', 4],
@@ -21,9 +22,17 @@ const genres = ['action', 'strategy', 'rpg', 'shooter', 'adventure', 'puzzle', '
 
 export default function Store() {
 	const navigate = useNavigate();
-	if (!localStorage.getItem('token')) {
+	if (!localStorage.getItem('token') || localStorage.getItem('token') == undefined) {
 		navigate('/login');
 	}
+    useEffect(() => {
+        axios.get('/api/me', {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}})
+        .then(res => {
+            if (res.status != 200) {
+                navigate('/login')
+            }
+        })
+    }, [navigate])
 	const { games, setGames } = useContext(AppContext);
 	const [title, setTitle] = useState('');
 	return (
