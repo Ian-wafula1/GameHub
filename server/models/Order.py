@@ -6,6 +6,7 @@ class Order(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     status = db.Column(db.String, default='pending')
+    receipt = db.Column(db.String, default='')
     updated_at = db.Column(db.DateTime, default=db.func.now())
     
     user = db.relationship('User', back_populates='orders', lazy=True)

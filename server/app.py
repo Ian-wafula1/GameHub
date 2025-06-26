@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from flask_restx import Resource
-from config import app, db, api, jwt
+from config import app, db, api, jwt, generate_receipt
 from models import Game, User, Order, OrderItem
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import datetime
@@ -202,15 +202,19 @@ class Orders(Resource):
     
     @jwt_required()
     def post(self):
-        data = request.get_json()
+        # data = request.get_json()
         user = User.query.filter_by(username=get_jwt_identity()).first()
-        status = data.get('status', 'pending')
-        order = Order(status=status)
+        cart = Order.query.filter_by(status='pending').first()
+        if not cart:
+            make_response({'error': 'Cart not found'}, 404)
+        
+        order = Order(status='pending')
         order.user = user
-        db.session.add(order)
+        cart.status = 'completed'
+        cart.receipt = generate_receipt()
+        db.session.add_all([order, cart])
         db.session.commit()
-        return make_response(order.to_dict(), 201, {'Content-Type': 'application/json'})
-    
+        
 @api.route('/orders/<int:order_id>', endpoint='order')
 class OrderByID(Resource):
     
@@ -259,21 +263,49 @@ class Games(Resource):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([g.to_dict() for g in user.games], 200, {'Content-Type': 'application/json'})
     
-# @api.route('/cart', endpoint='cart')
-# class Cart(Resource):
-#     @jwt_required()
-#     def get(self):
-#         cart = Order.query.filter_by(status='completed').first()
-#         if not cart:
-#             return make_response([], 200, {'Content-Type': 'application/json'})
-        
-#         return make_response([g.to_dict() for g in cart.order_items], 200, {'Content-Type': 'application/json'})
+@api.route('/me', endpoint='me')
+class Me(Resource):
+    @jwt_required()
+    def get(self):
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        if user:
+            return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
+        return make_response({'error': 'Token is invalid'}, 404)
     
-#     @jwt_required()
-#     def patch(self):
-#         cart = Order.query.filter_by(status='completed').first()
-#         if not cart:
-#             return make_response({'error': 'Cart is empty'}, 404)
+@api.route('/cart', endpoint='cart')
+class Cart(Resource):
+    @jwt_required()
+    def get(self):
+        cart = Order.query.filter_by(status='pending').first()
+        if not cart:
+            return make_response([], 200, {'Content-Type': 'application/json'})
+        
+        return make_response([g.to_dict() for g in cart.order_items], 200, {'Content-Type': 'application/json'})
+    
+    @jwt_required()
+    def post(self):
+        data = request.get_json()
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        cart = Order.query.filter_by(status='pending').first()
+        for key in ('api_game_id', 'name', 'price', 'img_url'):
+            if key not in data.keys():
+                return make_response({'error': f'Missing {key}'}, 400)
+            
+        if not cart:
+            cart = Order(status='pending')
+            cart.user = user
+            db.session.add(cart)
+            db.session.commit()
+            
+        item = OrderItem(api_game_id=data['api_game_id'], name=data['name'], price=data['price'], img_url=data['img_url'])
+        item.order = cart
+        db.session.add(item)
+        db.session.commit()
+        cart.order_items.append(item)
+        db.session.add(cart)
+        db.session.commit()
+        return make_response(item.to_dict(), 201, {'Content-Type': 'application/json'})
+    
     
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
