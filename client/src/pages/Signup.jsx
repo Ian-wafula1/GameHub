@@ -9,7 +9,7 @@ export default function Signup() {
     const navigate = useNavigate()
 	return (
 		<>
-			<h1>Create an account!</h1>
+			<h1 class="text-2xl font-bold text-center text-gray-800">Create an account!</h1>
 			<Formik
 				initialValues={{
 					username: '',
@@ -41,22 +41,27 @@ export default function Signup() {
                     setSubmitting(false);
                     // axios.get('/api/users').then(res=> console.log(res))
 				}}>
-                    <Form>
-                        <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />
-                        <MyTextInput label='Email' name='email' type='email' placeholder='Ig5mE@example.com' />
+                    <Form class="bg-gray-100 min-h-screen flex items-center justify-center">
+                        <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400">
+ />
+                        <MyTextInput label='Email' name='email' type='email' placeholder='Ig5mE@example.com' class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
+
+    />
                         <MyTextInput label='Age' name='age' type='number' placeholder='34' />
                         <MySelect label='Gender' name='gender'>
                             <option value="">Select a gender</option>
                             <option value="M">Male</option>
                             <option value="F">Female</option>
                         </MySelect>
-                        <MyTextInput label='Password' name='password' type='text'  />
-                        <MyTextInput label='Confirm Password' name='confirmPassword' type='text' />
+                        <MyTextInput label='Password' name='password' type='text' class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400">
+ />
+                        <MyTextInput label='Confirm Password' name='confirmPassword' type='text'class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
+ />
 
-                        <button type="submit">Submit</button>
+                        <button type="submit"class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded transition">Submit</button>
                     </Form>
                 </Formik>
-                <Link to="/login">Already have an account? Log in here</Link>
+                <Link class="text-center text-sm text-gray-600"to="/login">Already have an account? Log in here</Link>
 		</>
 	);
 }
