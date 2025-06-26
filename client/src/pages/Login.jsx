@@ -10,7 +10,7 @@ export default function Login() {
     const navigate = useNavigate()
 	return (
 		<>
-			<h1>Log in to an existing account</h1>
+			<h1class="text-2xl font-bold text-center text-gray-800">Log in to an existing account</h1>
 			<Formik
 				initialValues={{
 					username: '',
@@ -37,9 +37,9 @@ export default function Login() {
 						});
 				}}>
                     <Form>
-                        <MyTextInput name="username" type="text" label="Username" />
-                        <MyTextInput name="password" type="password" label="Password" />
-                        <button type="submit">Login</button>
+                        <MyTextInput name="username" type="text" label="Username" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"/>
+                        <MyTextInput name="password" type="password" label="Password"class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"/>
+                        <button type="submit"class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition">Login</button>
                     </Form>
                 </Formik>
                 <Link to="/signup">Don't have an account? Sign up here</Link>
