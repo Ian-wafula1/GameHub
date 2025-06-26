@@ -1,5 +1,5 @@
-from models import db, Game, User, Order, OrderItem
-from config import app
+from models import Game, User, Order, OrderItem
+from config import db, app
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import datetime
 

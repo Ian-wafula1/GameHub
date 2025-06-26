@@ -6,6 +6,9 @@ import ResetPassword from "./pages/ResetPassword";
 import { Navigate } from "react-router-dom";
 import Store from "./pages/Store";
 import Game from "./pages/Game";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
+import Cart from "./pages/Cart";
 
 const routes = [
     {
@@ -36,6 +39,18 @@ const routes = [
             {
                 path: "/game/:id",
                 element: <Game />
+            },
+            {
+                path: "/checkout",
+                element: <Checkout />
+            },
+            {
+                path: "/orders",
+                element: <Orders />
+            },
+            {
+                path: "/cart",
+                element: <Cart />
             },
             {
                 path: "*",
