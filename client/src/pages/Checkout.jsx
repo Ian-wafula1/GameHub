@@ -35,7 +35,7 @@ export default function Checkout() {
         <>
         <div>
             {cartItems.map(item => {
-                return <div>
+                return <div key={item.id}>
                     <p>{item.name}</p>
                     <p>{item.price}</p>
                 </div>

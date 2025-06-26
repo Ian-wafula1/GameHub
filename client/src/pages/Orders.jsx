@@ -9,7 +9,7 @@ export default function Orders() {
 		navigate('/login');
 	}
 
-	const [orders, setOrders] = useState([]);
+	let [orders, setOrders] = useState([]);
 
 	useEffect(() => {
 		axios
@@ -19,16 +19,19 @@ export default function Orders() {
 				},
 			})
 			.then((res) => {
+                console.log(res.data)
 				setOrders(res.data);
 			})
 			.catch((err) => console.log(err));
 	}, []);
+    console.log(orders)
+    orders = orders?.filter((order) => order.status !== 'pending')
 	return (
 		<>
 			<h1>Orders</h1>
 			<div>
-				{orders.map((order) => {
-					return <OrderItem order={order} />;
+				{orders?.map((order) => {
+					return <OrderItem key={order.id} order={order} />;
 				})}
 			</div>
 		</>

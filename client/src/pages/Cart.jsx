@@ -28,7 +28,7 @@ export default function Cart() {
 			<h1>Cart</h1>
 			<div>
 				{cartItems.map( (item) => {
-					return <CartItem key={item.id} item={item.data} />;
+					return <CartItem key={item?.id} item={item} />;
 				})}
 				<button onClick={() => navigate('/checkout')}>Proceed to checkout</button>
 			</div>

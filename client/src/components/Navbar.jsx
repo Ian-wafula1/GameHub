@@ -1,6 +1,7 @@
-import SearchBar from "./SearchBar";
+import SearchBar from './SearchBar';
 // import { useLocation } from "react-router-dom";
-import { useRef } from "react";
+import { useRef } from 'react';
+import { ShoppingCart, PlusSquare, Search } from 'lucide-react';
 
 export default function Navbar() {
 
