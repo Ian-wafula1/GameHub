@@ -15,7 +15,7 @@ class Login(Resource):
         user = User.query.filter_by(username=data['username']).first()
         
         if user and user.authenticate(data['password']):
-            access_token = create_access_token(identity=user.username, expires_delta=datetime.timedelta(days=1))
+            access_token = create_access_token(identity=user.username, expires_delta=datetime.timedelta(days=3))
             return {'access_token': access_token, 'user': user.to_dict()}, 200
         
         response= make_response({'error': 'Invalid username or password'}, 401) 
