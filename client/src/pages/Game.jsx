@@ -3,10 +3,12 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import getRandomPrice from "../utils/getRandomPrice";
+import useLogin from "../utils/confirmLogin";
 
 export default function Game(){
+    useLogin()
     let id = useParams()
-    id = id.id
+    id = id?.id
     const navigate = useNavigate()
 
     if (!id || !localStorage.getItem('token')) {

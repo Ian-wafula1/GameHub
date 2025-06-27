@@ -2,3 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Furore';
+    src: url('./assets/fonts/furore-webfont.woff2') format('woff2'),
+         url('./assets/fonts/furore-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --color-primary-500: #0f1012;
+    --color-secondary-white: #cccccc;
+    --color-secondary-grey: #999999;
+    --font-furore: 'Furore', sans-serif;
+    --font-testing: "serif"; 
+    --font-display: "Oswald", "sans-serif"; 
+}
+
+.logo {
+    font-family: var(--font-furore);
+}
