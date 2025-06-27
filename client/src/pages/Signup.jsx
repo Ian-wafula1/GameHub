@@ -8,8 +8,8 @@ export default function Signup() {
 
     const navigate = useNavigate()
 	return (
-		<>
-			<h1>Create an account!</h1>
+		<div className='m-5 flex flex-col gap-5 max-w-[630px] w-[80%] px-8 py-5 self-center bg-[#ffffff33] text-white text-lg font-semibold backdrop-blur-[10px] rounded-3xl '>
+			<h1 className='text-3xl self-center'>Create an account!</h1>
 			<Formik
 				initialValues={{
 					username: '',
@@ -41,7 +41,7 @@ export default function Signup() {
                     setSubmitting(false);
                     // axios.get('/api/users').then(res=> console.log(res))
 				}}>
-                    <Form>
+                    <Form className='flex flex-col gap-2 '>
                         <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />
                         <MyTextInput label='Email' name='email' type='email' placeholder='Ig5mE@example.com' />
                         <MyTextInput label='Age' name='age' type='number' placeholder='34' />
@@ -53,10 +53,10 @@ export default function Signup() {
                         <MyTextInput label='Password' name='password' type='text'  />
                         <MyTextInput label='Confirm Password' name='confirmPassword' type='text' />
 
-                        <button type="submit">Submit</button>
+                        <button className='my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900  w-60 self-center' type="submit">Sign up</button>
                     </Form>
                 </Formik>
-                <Link to="/login">Already have an account? Log in here</Link>
-		</>
+                <p className='text-[#0f1012] text-center text-xl'>Already have an account? <Link className='text-purple-900 underline' to="/login">Log in</Link></p>
+		</div>
 	);
 }

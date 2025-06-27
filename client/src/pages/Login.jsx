@@ -6,11 +6,10 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 export default function Login() {
-
-    const navigate = useNavigate()
+	const navigate = useNavigate();
 	return (
-		<>
-			<h1>Log in to an existing account</h1>
+		<div className="m-5 flex flex-col max-w-[580px] w-[80%] px-8 py-5 self-center my-20 bg-[#ffffff33] text-white text-lg font-semibold backdrop-blur-[10px] rounded-3xl ">
+			<h1 className="text-3xl self-center mb-5">Log in</h1>
 			<Formik
 				initialValues={{
 					username: '',
@@ -29,21 +28,33 @@ export default function Login() {
 						.then((response) => {
 							let token = response.data.access_token;
 							localStorage.setItem('token', token);
-                            navigate('/')
+							navigate('/');
 						})
 						.catch((error) => console.error(error))
 						.finally(() => {
 							setSubmitting(false);
 						});
 				}}>
-                    <Form>
-                        <MyTextInput name="username" type="text" label="Username" />
-                        <MyTextInput name="password" type="password" label="Password" />
-                        <button type="submit">Login</button>
-                    </Form>
-                </Formik>
-                <Link to="/signup">Don't have an account? Sign up here</Link>
-                <Link to="/reset-password">Forgot your password? Reset it here</Link>
-		</>
+				<Form className='flex flex-col gap-2 '>
+					<MyTextInput name="username" type="text" label="Username" />
+					<MyTextInput name="password" type="password" label="Password" />
+					<button className="my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900  w-60 self-center" type="submit">
+						Login
+					</button>
+				</Form>
+			</Formik>
+			<p className='text-slate-900'>
+				Don't have an account?{' '}
+				<Link to="/signup" className="text-purple-900 underline">
+					Sign up
+				</Link>
+			</p>
+			<p className='text-slate-900'>
+				Forgot your password?{' '}
+				<Link to="/reset-password" className="text-purple-900 underline">
+					Reset password
+				</Link>
+			</p>
+		</div>
 	);
 }
