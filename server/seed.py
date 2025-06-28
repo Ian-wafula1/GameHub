@@ -6,11 +6,15 @@ import datetime
 from sqlalchemy.sql import func
 
 with app.app_context():
+
+    # clear db
     Game.query.delete()
     User.query.delete()
     Order.query.delete()
     OrderItem.query.delete()
 
+    db.session.commit()
+    
     # user = User(username='admin', password='password')
     # db.session.add(user)
     # db.session.commit()

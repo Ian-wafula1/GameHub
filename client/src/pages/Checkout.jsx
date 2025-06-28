@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import confirm from "../utils/confirmLogin"
 
 export default function Checkout() {
+    confirm() ? true : navigate('/login')
     const navigate = useNavigate()
-    if (!localStorage.getItem('token')) {
-        navigate('/login')
-    }
 
     const [cartItems, setCartItems] = useState([])
 
@@ -35,7 +34,7 @@ export default function Checkout() {
         <>
         <div>
             {cartItems.map(item => {
-                return <div>
+                return <div key={item.id}>
                     <p>{item.name}</p>
                     <p>{item.price}</p>
                 </div>

@@ -7,8 +7,8 @@ import axios from 'axios';
 export default function ResetPassword() {
 	const navigate = useNavigate();
 	return (
-		<>
-			<h1>Reset your password</h1>
+		<div className='m-5 flex flex-col gap-5 max-w-[550px] w-[80%] px-8 pt-5 self-center bg-[#ffffff33] text-white text-lg font-semibold backdrop-blur-[10px] rounded-3xl '>
+			<h1 className="text-3xl self-center mb-5 text-center">Reset your password</h1>
 			<Formik
 				initialValues={{
 					username: '',
@@ -35,13 +35,13 @@ export default function ResetPassword() {
 							setSubmitting(false);
 						});
 				}}>
-				<Form>
+				<Form className='flex flex-col gap-2  '>
 					<MyTextInput name="username" type="text" label="Username" />
-					<MyTextInput name="email" type="email" label="email" />
+					<MyTextInput name="email" type="email" label="Email" />
 					<MyTextInput name="password" type="password" label="Password" />
-					<button type="submit">Reset Password</button>
+					<button className='my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900 w-[60%] min-w-[180px] shrink self-center' type="submit">Reset password</button>
 				</Form>
 			</Formik>
-		</>
+		</div>
 	);
 }
