@@ -5,7 +5,8 @@ import vid from './assets/video2.mp4';
 import vid2 from './assets/video1.mp4';
 import { useContext } from 'react';
 import { AppContext } from './context/AppContext';
-import fetchTop from './utils/fetchTop';
+// import fetchTop from './utils/fetchTop';
+import fetchRandom from './utils/fetchRandom';
 
 function App() {
 	const [loc, setLoc] = useState(window.location.pathname);
@@ -23,7 +24,7 @@ function App() {
 			console.log(window.location.pathname)
 		};
 
-		fetchTop({setGames, setTitle})
+		fetchRandom({setGames, setTitle})
 
 		window.addEventListener('popstate', handlePopState);
 
@@ -32,7 +33,7 @@ function App() {
 		};
 	}, [setGames, setTitle]);
 	return (
-		<div className="flex flex-col gap-10">
+		<div className="flex flex-col">
 			<Navbar></Navbar>
 			<main className='flex flex-col'>
 				{['/', '/signup', '/login', '/reset-password'].includes(loc) ? (

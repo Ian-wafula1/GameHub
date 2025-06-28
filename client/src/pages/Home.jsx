@@ -1,6 +1,6 @@
 import '../index.css';
 import NavButton from '../components/NavButton';
-import { LucideDices, Trophy, Crown, LibraryBig, NavigationOff } from 'lucide-react';
+import { LucideDices, Trophy, Crown, LibraryBig } from 'lucide-react';
 import Github from '../assets/github.svg';
 import RawG from '../assets/RAWG.png';
 import { useNavigate } from 'react-router-dom';
@@ -33,7 +33,7 @@ export default function Home() {
   }
 
 	return (
-		<div className="flex flex-col gap-[2rem] items-center *:flex *:flex-col lg:flex-row m-6 lg:justify-between lg:m-10 ">
+		<div className="flex flex-col gap-[2rem] items-center *:flex *:flex-col lg:flex-row m-6 lg:justify-between lg:m-10 lg:mt-16">
 			<div className=" *:bg-[#ffffff33] *:text-white *:text-lg *:font-semibold *:backdrop-blur-[17px] *:rounded-3xl *:p-6 gap-5 max-w-[550px] ">
         
 				<div className="flex flex-col gap-4 items-center">
