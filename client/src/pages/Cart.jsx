@@ -25,7 +25,7 @@ export default function Cart() {
 	}, []);
     console.log(cartItems)
 	return (
-		<>
+		<div>
 			<h1>Cart</h1>
 			<div>
 				{cartItems.map( (item) => {
@@ -33,6 +33,6 @@ export default function Cart() {
 				})}
 				<button onClick={() => navigate('/checkout')}>Proceed to checkout</button>
 			</div>
-		</>
+		</div>
 	);
 }

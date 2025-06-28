@@ -117,7 +117,7 @@ class Wishlist(Resource):
             return make_response({'error': 'Game already in wishlist'}, 400)
         
     
-@api.route('/wishlist/<int:game_id>', endpoint='wishlist_by_id')
+@api.route('/wishlist/<int:id>', endpoint='wishlist_by_id')
 class WishlistByID(Resource):
     @jwt_required()
     def patch(self, id):
@@ -134,12 +134,12 @@ class WishlistByID(Resource):
     
     @jwt_required()
     def delete(self, id):
-        game = Game.query.filter_by(id=id).first()
+        game = Game.query.filter_by(api_game_id = id).first()
         if not game or game.purchased:
             return make_response({'error': 'Game not in wishlist'}, 400)
         db.session.delete(game)
         db.session.commit()
-        return make_response(game.to_dict(), 200, {'Content-Type': 'application/json'})
+        return make_response({'message': 'Game deleted'}, 200, {'Content-Type': 'application/json'})
     
 @api.route('/library', endpoint='library')
 class Library(Resource):
@@ -212,8 +212,14 @@ class Orders(Resource):
         order.user = user
         cart.status = 'completed'
         cart.receipt = generate_receipt()
+        for item in cart.order_items:
+            game = Game(name=item.name, api_game_id=item.api_game_id, purchased=True)
+            game.user = user
+            db.session.add(game)
+            db.session.commit()
         db.session.add_all([order, cart])
         db.session.commit()
+        return make_response(cart.to_dict(), 201, {'Content-Type': 'application/json'})
         
 @api.route('/orders/<int:order_id>', endpoint='order')
 class OrderByID(Resource):
@@ -305,7 +311,19 @@ class Cart(Resource):
         db.session.add(cart)
         db.session.commit()
         return make_response(item.to_dict(), 201, {'Content-Type': 'application/json'})
-    
+
+@api.route('/cart/<int:id>', endpoint='cart_by_id')
+class CartByID(Resource):
+    def delete(self, id):
+        cart = Order.query.filter_by(status='pending').first()
+        if not cart:
+            return make_response({'error': 'Cart not found'}, 400)
+        item = OrderItem.query.filter_by(api_game_id=id).first()
+        if not item:
+            return make_response({'error': 'Item not found'}, 400)
+        db.session.delete(item)
+        db.session.commit()
+        return make_response({'message': 'Item deleted'}, 200, {'Content-Type': 'application/json'})
     
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
