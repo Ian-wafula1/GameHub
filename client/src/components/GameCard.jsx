@@ -9,7 +9,7 @@ const platforms = [
 	['iOS', 3, IOSIcon],
 	['Android', 21, AndroidIcon],
 	['Web', 32, WebIcon],
-	['Apple Macintosh', 1, IOSIcon],
+	['Apple Macintosh', 14, IOSIcon],
 ];
 
 export default function GameCard({ game }) {
@@ -20,7 +20,7 @@ export default function GameCard({ game }) {
 	}
 
 	return (
-		<div className="rounded-3xl overflow-hidden bg-neutral-800 pb-3" onClick={handleClick}>
+		<div className="rounded-3xl overflow-hidden bg-neutral-800 pb-3 max-h-[450px]" onClick={handleClick}>
 			<img className="inset-0 h-[70%] w-full " src={game?.background_image || 'https://placehold.co/600x400/grey/black'} alt={game.name} />
 			<div className="inset-0 flex flex-col justify-between px-4 pt-3">
 				{/* <p>Rating: {game.rating || 'Unlisted'}</p> */}
@@ -30,7 +30,6 @@ export default function GameCard({ game }) {
 						let games = game?.parent_platforms?.map((x) => x.platform.name);
 						let foundPlatforms = [];
 						return games?.map((game) => {
-							console.log(game);
 							let found = platforms?.find((platform) => platform[0] === game);
 							// platforms.push(found || [game, game])
 							if (found) {

@@ -9,6 +9,7 @@ import Game from "./pages/Game";
 import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import Cart from "./pages/Cart";
+import Profile from "./pages/Profile";
 
 const routes = [
     {
@@ -51,6 +52,10 @@ const routes = [
             {
                 path: "/cart",
                 element: <Cart />
+            },
+            {
+                path: "/profile",
+                element: <Profile />
             },
             {
                 path: "*",

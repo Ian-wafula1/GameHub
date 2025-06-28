@@ -26,10 +26,10 @@ function App() {
 
 		fetchRandom({setGames, setTitle})
 
-		window.addEventListener('popstate', handlePopState);
+		window.addEventListener('hashchange', handlePopState);
 
 		return () => {
-			window.removeEventListener('popstate', handlePopState);
+			window.removeEventListener('hashchange', handlePopState);
 		};
 	}, [setGames, setTitle]);
 	return (

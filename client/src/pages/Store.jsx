@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 // import getRandomPrice from '../utils/getRandomPrice';
 import GameCard from '../components/GameCard';
@@ -6,10 +6,11 @@ import fetchPlatform from '../utils/fetchPlatform';
 import fetchGenre from '../utils/fetchGenre';
 import fetchTop from '../utils/fetchTop';
 import fetchSaved from '../utils/fetchSaved';
-import useLogin from '../utils/confirmLogin';
+import confirmLogin from '../utils/confirmLogin';
 import { Trophy, Crown, LibraryBig } from 'lucide-react';
 // import { Playstation, PC, XBox, Nintendo, IOS, Android, Action, Strategy, RPG, Shooter, Adventure, Puzzle, Racing, Sports } from '../assets/svgCustom';
 import { PCIcon, PlaystationIcon, XboxIcon, NintendoIcon, IOSIcon, AndroidIcon, ActionIcon, StrategyIcon, RPGIcon, ShooterIcon, AdventureIcon, PuzzleIcon, RacingIcon, SportsIcon } from '../assets/svgCustom';
+import { useNavigate } from 'react-router-dom';
 
 // const platforms = [
 // 	['PC', 4],
@@ -82,7 +83,10 @@ const genres = [
 // ]
 
 export default function Store() {
-	useLogin();
+	const navigate = useNavigate()
+	useEffect(() => {
+			confirmLogin() ? true : navigate('/login')
+	}, [navigate])
 	const { games, setGames, title, setTitle } = useContext(AppContext);
 	const [open, setOpen] = useState(false);
 	const buttons = (

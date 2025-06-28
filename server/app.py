@@ -263,14 +263,14 @@ class Games(Resource):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([g.to_dict() for g in user.games], 200, {'Content-Type': 'application/json'})
     
-@api.route('/me', endpoint='me')
-class Me(Resource):
+@api.route('/check_login', endpoint='check_login')
+class CheckLogin(Resource):
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         if user:
             return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
-        return make_response({'error': 'Token is invalid'}, 404)
+        return make_response({'error': 'Token is invalid'}, 400)
     
 @api.route('/cart', endpoint='cart')
 class Cart(Resource):

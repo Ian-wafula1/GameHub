@@ -1,10 +1,14 @@
 import OrderItem from '../components/OrderItem';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import useLogin from '../utils/confirmLogin';
+import confirmLogin from '../utils/confirmLogin';
+import { useNavigate } from 'react-router-dom';
 
 export default function Orders() {
-	useLogin()
+	const navigate = useNavigate();
+	useEffect(() => {
+			confirmLogin() ? true : navigate('/login')
+	}, [navigate])
 
 	let [orders, setOrders] = useState([]);
 

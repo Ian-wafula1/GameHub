@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import CartItem from '../components/CartItem';
 import { useNavigate } from 'react-router-dom';
-import useLogin from '../utils/confirmLogin';
+import confirmLogin from '../utils/confirmLogin';
 
 export default function Cart() {
-	useLogin()
 	const navigate = useNavigate();
+	useEffect(() => {
+			confirmLogin() ? true : navigate('/login')
+		}, [navigate])
 	const [cartItems, setCartItems] = useState([]);
 
 	useEffect(() => {
