@@ -25,16 +25,15 @@ export default function Orders() {
 			})
 			.catch((err) => console.log(err));
 	}, []);
-    console.log(orders)
     orders = orders?.filter((order) => order.status !== 'pending')
 	return (
-		<>
-			<h1>Orders</h1>
-			<div>
+		<div className='flex flex-col gap-5 text-white py-3 px-5' >
+			<h1 className='text-3xl font-bold'>Orders</h1>
+			<div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(360px,1fr))] '>
 				{orders?.map((order) => {
 					return <OrderItem key={order.id} order={order} />;
 				})}
 			</div>
-		</>
+		</div>
 	);
 }
