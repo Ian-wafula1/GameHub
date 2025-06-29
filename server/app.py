@@ -64,13 +64,13 @@ class ResetPassword(Resource):
     
 @api.route('/users', endpoint='users')
 class Users(Resource):
-    # @jwt_required()
+    @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         # return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
         # return make_response({'test': 'test'}, 200, {'Content-Type': 'application/json'})
         users = User.query.all()
-        return make_response([u.to_dict() for u in users], 200, {'Content-Type': 'application/json'})
+        return make_response([u.to_dict() for u in users if u != user ], 200, {'Content-Type': 'application/json'})
     
     @jwt_required()
     def patch(self):
@@ -359,6 +359,19 @@ class Friends(Resource):
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([f.to_dict() for f in user.friends], 200, {'Content-Type': 'application/json'})
+    
+    @jwt_required()
+    def post(self):
+        data = request.get_json()
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        friend = User.query.filter_by(username=data['username']).first()
+        if not friend:
+            return make_response({'error': 'User not found'}, 404)
+        user.friends.append(friend)
+        friend.friends.append(user)
+        db.session.add_all([user, friend])
+        db.session.commit()
+        return make_response(friend.to_dict(), 201, {'Content-Type': 'application/json'})
     
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
