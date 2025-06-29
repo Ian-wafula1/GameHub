@@ -3,15 +3,23 @@ from flask_restx import Resource
 from config import app, db, api, jwt, generate_receipt
 from models import Game, User, Order, OrderItem, Profile
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-import datetime
+import datetime, os
 
 @app.route('/')
-def serve_index():
+def index():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/<path:path>')
 def catch_all(path):
-    return render_template("index.html")
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.exists(file_path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+    
+@app.errorhandler(404)
+def not_found(e):
+    return send_from_directory(app.static_folder, 'index.html')
 
 @api.route('/login', endpoint='login')
 class Login(Resource):
