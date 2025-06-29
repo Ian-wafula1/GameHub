@@ -4,6 +4,8 @@ import CartItem from '../components/CartItem';
 import { useNavigate } from 'react-router-dom';
 import confirmLogin from '../utils/confirmLogin';
 import {ArrowRightCircle} from 'lucide-react'
+import { BackArrow } from '../assets/svgCustom';
+
 
 export default function Cart() {
 	const navigate = useNavigate();
@@ -24,18 +26,44 @@ export default function Cart() {
 			})
 			.catch((err) => console.log(err));
 	}, []);
+
+	function deleteFromCart(id) {
+		console.log(id)
+        axios.delete(`/api/cart/${id}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            }
+        }).then(() => {
+            // cartItems.filter((item) => item.id !== id);
+			setCartItems(c => c.filter((item) => item.id !== id))
+        }).catch((err) => console.log(err));
+    }
 	return (
 		<div className="text-white flex flex-col gap-5 px-4">
-			<h1 className="text-5xl font-bold">Cart</h1>
+			<div>
+				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
+					<BackArrow className="fill-gray-200 w-5 h-5" />
+					<p>Back</p>
+				</div>
+			<h1 className="text-5xl font-bold text-right">Cart</h1>
+			</div>
 			<div className="grid grid-cols-1 md:grid-cols-5 gap-5">
 				<div className=" flex flex-col gap-4 col-span-3">
 					{cartItems.map((item) => {
-						return <CartItem key={item?.id} item={item} />;
+						return <CartItem onDelete={deleteFromCart} key={item?.id} item={item} />;
 					})}
-					<div className='self-center flex items-center group gap-2 border-2 border-green-400 hover:bg-green-100 hover:bg-opacity-10 focus:ring-2 cursor-pointer rounded-full py-3 px-5' onClick={() => navigate('/checkout')}>
+					{cartItems.length ? (
+						<div className='self-center flex items-center group gap-2 border-2 border-green-400 hover:bg-green-100 hover:bg-opacity-10 focus:ring-2 cursor-pointer rounded-full py-3 px-5' onClick={() => navigate('/checkout')}>
 						<p className='font-bold text-green-400 group-hover:text-white' >Proceed to checkout</p>
 						<ArrowRightCircle className='relative top-[2px]' size={20} color='#4ade80' />
 					</div>
+					)
+				:
+				(
+					<div disabled className='self-center flex items-center group gap-2 border-2 border-red-400 hover:bg-red-100 hover:bg-opacity-10 focus:ring-2 cursor-not-allowed rounded-full py-3 px-5'>
+						<p className='font-bold text-red-400 group-hover:text-white' >Cart is empty</p>
+					</div>
+				)}
 				</div>	
 				<div className="hidden md:flex flex-col items-center justify-center col-span-2 border-2 border-neutral-700 rounded-xl">
 					<svg

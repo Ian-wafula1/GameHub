@@ -318,7 +318,7 @@ class CartByID(Resource):
         cart = Order.query.filter_by(status='pending').first()
         if not cart:
             return make_response({'error': 'Cart not found'}, 400)
-        item = OrderItem.query.filter_by(api_game_id=id).first()
+        item = OrderItem.query.filter_by(id=id).first()
         if not item:
             return make_response({'error': 'Item not found'}, 400)
         db.session.delete(item)
