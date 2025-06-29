@@ -3,10 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { MyCheckbox, MySelect, MyTextInput } from '../utils/formElements';
 import * as Yup from 'yup';
 import axios from 'axios';
+import vid from '../assets/video1.mp4';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function ResetPassword() {
 	const navigate = useNavigate();
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	return (
+		<>
+		<ToastContainer />
+		<video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
+						<source src={vid} type="video/mp4" />
+						Your browser does not support the video tag.
+					</video>
 		<div className='m-5 flex flex-col gap-5 max-w-[550px] w-[80%] px-8 pt-5 self-center bg-[#ffffff33] text-white text-lg font-semibold backdrop-blur-[10px] rounded-3xl '>
 			<h1 className="text-3xl self-center mb-5 text-center">Reset your password</h1>
 			<Formik
@@ -30,7 +40,7 @@ export default function ResetPassword() {
 						.then(() => {
 							navigate('/login');
 						})
-						.catch((error) => console.error(error))
+						.catch((error) => notify(error))
 						.finally(() => {
 							setSubmitting(false);
 						});
@@ -42,6 +52,6 @@ export default function ResetPassword() {
 					<button className='my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900 w-[60%] min-w-[180px] shrink self-center' type="submit">Reset password</button>
 				</Form>
 			</Formik>
-		</div>
+		</div></>
 	);
 }
