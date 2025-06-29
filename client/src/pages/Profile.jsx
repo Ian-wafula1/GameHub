@@ -6,6 +6,9 @@ import getRandomHexColor from '../utils/getRandomHex';
 import { AddIcon, CloseIcon, EditIcon } from '../assets/svgCustom';
 import FriendCard from '../components/FriendCard';
 import Modal from 'react-modal';
+import { Formik, Form } from 'formik';
+import {  MyTextInput } from '../utils/formElements';
+import * as Yup from 'yup';
 
 Modal.setAppElement('#root');
 Modal.defaultStyles.overlay.backgroundColor = '#00000080';
@@ -34,6 +37,14 @@ export default function Profile() {
 		setIsOpen((x) => ({ ...x, model1: false }));
 	}
 
+    function openModal2() {
+        setIsOpen((x) => ({ ...x, model2: true }));
+    }
+
+    function closeModal2() {
+        setIsOpen((x) => ({ ...x, model2: false }));
+    }
+
 	const navigate = useNavigate();
 	const [user, setUser] = useState({});
 	const [users, setUsers] = useState([]);
@@ -60,10 +71,6 @@ export default function Profile() {
 		}
 	}, [navigate]);
 
-	function handleClick() {
-		console.log('clicked');
-	}
-
 	function logout() {
 		localStorage.removeItem('token');
 		navigate('/');
@@ -75,7 +82,7 @@ export default function Profile() {
 			.then((res) => {
 				console.log(res);
 				setIsOpen((x) => ({ ...x, model1: false }));
-				// setUser(res.data)
+				setUser(x => ({...x, friends: [...x.friends, friend]}))
 			})
 			.catch((err) => console.log(err));
 	}
@@ -86,15 +93,15 @@ export default function Profile() {
 				<div className="px-8 py-10 flex flex-col items-center gap-3">
 					<div className="w-[70%] group relative ">
 						<img className="cursor-pointer rounded-full w-full group-hover:opacity-25" src={user?.profile?.avatar_url || `https://ui-avatars.com/api/?name=${user?.username?.at(0)}&background=${getRandomHexColor()}&format=svg`} alt="" />
-						<EditIcon className={'hidden group-hover:block absolute m-auto inset-0 w-12 h-12'} onClick={handleClick} />
+						<EditIcon className={'hidden group-hover:block absolute m-auto inset-0 w-12 h-12'} onClick={openModal2} />
 					</div>
 					<h1 className="text-3xl font-bold flex items-center gap-2">
 						<p>{user?.username}</p>
-						<EditIcon onClick={handleClick} className={'w-4 h-4 relative top-[4px]'} />
+						<EditIcon onClick={openModal2} className={'w-4 h-4 relative top-[4px]'} />
 					</h1>
 					<div className="text-gray-400 flex items-center gap-2">
 						<p>{user?.email}</p>
-						<EditIcon onClick={handleClick} className={'w-3 h-3'} />
+						<EditIcon onClick={openModal2} className={'w-3 h-3'} />
 					</div>
 					<div onClick={logout} className="active:bg-opacity-75 cursor-pointer bg-red-600 border-2 border-neutral-950 px-6 py-1 rounded-xl ">
 						<p>Log out</p>
@@ -103,10 +110,55 @@ export default function Profile() {
 				<div className="flex flex-col gap-2">
 					<div className="flex gap-2 items-center">
 						<p className="text-xl font-bold">Bio</p>
-						<EditIcon className={'w-4 h-4 relative top-[2px]'} onClick={handleClick} />
+						<EditIcon className={'w-4 h-4 relative top-[2px]'} onClick={openModal2} />
 					</div>
 					<p className="py-3 px-4 rounded-xl bg-neutral-700">{user?.profile?.bio || "This user hasn't written a bio yet. Mysterious. Enigmatic. Possibly a secret agent. Or maybe they just forgot. We may never know..."}</p>
 				</div>
+                <Modal className={'relative text-white p-5 bg-neutral-800 rounded-2xl w-[70%] h-[60%] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'} isOpen={modalIsOpen.model2} onRequestClose={closeModal2} contentLabel="Edit Profile">
+						<CloseIcon className={'absolute top-3 right-3  w-8 h-8 cursor-pointer stroke-red-600'} onClick={closeModal2} />
+                        <Formik
+				initialValues={{
+					username: user.username,
+					email: user.email,
+					bio: user.profile?.bio || '', 
+                    avatar_url:user?.avatar_url || '',
+				}}
+				validationSchema={Yup.object({
+					username: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
+					email: Yup.string().email('Invalid email address').required('Required'),
+                    bio: Yup.string().max(200, 'Must be 200 characters or less').required('Required'),
+                    avatar_url: Yup.string().url('Invalid URL').required('Required'),
+				})}
+				onSubmit={(values, { setSubmitting }) => {
+					axios.patch(`/api/me`, {
+                        user: {
+                            username: values.username,
+                            email: values.email,
+                        },
+                        profile: {
+                            bio: values.bio,
+                            avatar_url: values.avatar_url
+                        }
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    }).then(res => {
+                        setUser(res.data)
+                    }).catch(err => console.log(err))
+                    setSubmitting(false);
+                    // axios.get('/api/users').then(res=> console.log(res))
+				}}>
+                    <Form className='flex flex-col gap-2 '>
+                        <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />
+                        <MyTextInput label='Email' name='email' type='email' placeholder='Ig5mE@example.com' />
+                        <MyTextInput label='Bio' name='bio' type='text' placeholder="I fiddle pigs" />
+                        <MyTextInput label='Avatar URL' name='avatar_url' type='text' placeholder='http://pleaseputa.valid/url-here/please' />
+
+                        <button className='my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900  w-60 self-center' type="submit">Submit</button>
+                    </Form>
+                </Formik>
+                </Modal>
 			</div>
 			<div className="flex flex-col gap-5 ">
 				<div className="flex gap-2 items-center">

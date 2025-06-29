@@ -344,14 +344,14 @@ class Me(Resource):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         if not user:
             return make_response({'error': 'User not found'}, 404)
-        for key, value in data.user.items():
+        for key, value in data['user'].items():
             setattr(user, key, value)
-        for key, value in data.profile.items():
+        for key, value in data['profile'].items():
             setattr(user.profile, key, value)
         db.session.add(user)
         db.session.add(user.profile)
         db.session.commit()
-        return make_response(user.profile.to_dict(), 200, {'Content-Type': 'application/json'})
+        return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
     
 @api.route('/friends', endpoint='friends')
 class Friends(Resource):
