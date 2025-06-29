@@ -10,12 +10,13 @@ import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
+import ErrorPage from "./pages/ErrorPage";
 
 const routes = [
     {
         path: "/",
         element: <App />,
-        errorElement: <div>404 Not Found</div>,
+        errorElement: <ErrorPage />,
         children: [
             {
                 index: true,

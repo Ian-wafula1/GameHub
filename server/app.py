@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, make_response
 from flask_restx import Resource
 from config import app, db, api, jwt, generate_receipt
-from models import Game, User, Order, OrderItem
+from models import Game, User, Order, OrderItem, Profile
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import datetime
 
@@ -40,6 +40,9 @@ class Signup(Resource):
             return make_response({'error': 'Email already exists'}, 400)
         
         user = User(username=data['username'], email=data['email'], age=data['age'], gender=data['gender'])
+        profile = Profile()
+        user.profile = profile
+        
         user.password_hash = data['password']
         db.session.add(user)
         db.session.commit()
@@ -64,8 +67,10 @@ class Users(Resource):
     # @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
-        return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
+        # return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
         # return make_response({'test': 'test'}, 200, {'Content-Type': 'application/json'})
+        users = User.query.all()
+        return make_response([u.to_dict() for u in users], 200, {'Content-Type': 'application/json'})
     
     @jwt_required()
     def patch(self):
@@ -324,6 +329,36 @@ class CartByID(Resource):
         db.session.delete(item)
         db.session.commit()
         return make_response({'message': 'Item deleted'}, 200, {'Content-Type': 'application/json'})
+    
+@api.route('/me', endpoint='me')
+class Me(Resource):
+    
+    @jwt_required()
+    def get(self):
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
+    
+    @jwt_required()
+    def patch(self):
+        data = request.get_json()
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        if not user:
+            return make_response({'error': 'User not found'}, 404)
+        for key, value in data.user.items():
+            setattr(user, key, value)
+        for key, value in data.profile.items():
+            setattr(user.profile, key, value)
+        db.session.add(user)
+        db.session.add(user.profile)
+        db.session.commit()
+        return make_response(user.profile.to_dict(), 200, {'Content-Type': 'application/json'})
+    
+@api.route('/friends', endpoint='friends')
+class Friends(Resource):
+    @jwt_required()
+    def get(self):
+        user = User.query.filter_by(username=get_jwt_identity()).first()
+        return make_response([f.to_dict() for f in user.friends], 200, {'Content-Type': 'application/json'})
     
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
