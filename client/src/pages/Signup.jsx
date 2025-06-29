@@ -8,8 +8,10 @@ export default function Signup() {
 
     const navigate = useNavigate()
 	return (
+
 		<div className='m-5 flex flex-col gap-5 max-w-[630px] w-[80%] px-8 py-5 self-center bg-[#ffffff33] text-white text-lg font-semibold backdrop-blur-[10px] rounded-3xl '>
 			<h1 className='text-3xl self-center'>Create an account!</h1>
+
 			<Formik
 				initialValues={{
 					username: '',
@@ -41,22 +43,27 @@ export default function Signup() {
                     setSubmitting(false);
                     // axios.get('/api/users').then(res=> console.log(res))
 				}}>
+
                     <Form className='flex flex-col gap-2 '>
                         <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />
                         <MyTextInput label='Email' name='email' type='email' placeholder='Ig5mE@example.com' />
+
                         <MyTextInput label='Age' name='age' type='number' placeholder='34' />
                         <MySelect label='Gender' name='gender'>
                             <option value="">Select a gender</option>
                             <option value="M">Male</option>
                             <option value="F">Female</option>
                         </MySelect>
-                        <MyTextInput label='Password' name='password' type='text'  />
-                        <MyTextInput label='Confirm Password' name='confirmPassword' type='text' />
+                        <MyTextInput label='Password' name='password' type='text' class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400">
+ />
+                        <MyTextInput label='Confirm Password' name='confirmPassword' type='text'class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
+ />
 
                         <button className='my-5 border-2 border-white bg-gray-700 transition-colors rounded-3xl px-4 py-[.6rem] hover:bg-slate-900  w-60 self-center' type="submit">Sign up</button>
                     </Form>
                 </Formik>
                 <p className='text-[#0f1012] text-center text-xl'>Already have an account? <Link className='text-purple-900 underline' to="/login">Log in</Link></p>
 		</div>
+
 	);
 }
