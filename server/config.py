@@ -16,6 +16,14 @@ def generate_receipt(length=12):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
+authorizations = {
+    'Bearer': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'Authorization'
+    }
+}
+
 app = Flask(__name__)
 app.secret_key = b'\r\xdd}\xa1\x1dK\x11\xe2\xef\xc1\x99\xb2:\xc8\xcc\x0e'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gamehub.db'
@@ -32,4 +40,4 @@ migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 CORS(app)
 
-api = Api(app)
+api = Api(app, authorizations=authorizations)

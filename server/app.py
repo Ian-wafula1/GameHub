@@ -7,6 +7,7 @@ import datetime
 
 @api.route('/login', endpoint='login')
 class Login(Resource):
+    @api.doc(id='login' ,security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '401': 'Unauthorized'})
     def post(self):
         data = request.get_json()
         if not (data.get('username') and data.get('password')):
@@ -24,6 +25,7 @@ class Login(Resource):
     
 @api.route('/signup', endpoint='signup')
 class Signup(Resource):
+    @api.doc(id='signup',security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
     def post(self):
         data = request.get_json()
         
@@ -50,6 +52,7 @@ class Signup(Resource):
     
 @api.route('/reset_password', endpoint='reset_password')
 class ResetPassword(Resource):
+    @api.doc(id='reset_password', security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'User not found'})
     def post(self):
         data = request.get_json()
         if not (data.get('username') and data.get('password') and data.get('email')):
@@ -64,44 +67,23 @@ class ResetPassword(Resource):
     
 @api.route('/users', endpoint='users')
 class Users(Resource):
+    @api.doc(id='users', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
-        # return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
-        # return make_response({'test': 'test'}, 200, {'Content-Type': 'application/json'})
         users = User.query.all()
         return make_response([u.to_dict() for u in users if u != user ], 200, {'Content-Type': 'application/json'})
     
-    @jwt_required()
-    def patch(self):
-        data = request.get_json()
-        user = User.query.filter_by(username=get_jwt_identity()).first()
-        if not user:
-            return make_response({'error': 'User not found'}, 404)
-        for key, value in data.items():
-            setattr(user, key, value)
-        db.session.add(user)
-        db.session.commit()
-        return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
     
-    @jwt_required()
-    def delete(self):
-        user = User.query.filter_by(username=get_jwt_identity()).first()
-        if not user:
-            return make_response({'error': 'User not found'}, 404)
-        db.session.delete(user)
-        db.session.commit()
-        return make_response({'message': 'User deleted'}, 200)
-
-
 @api.route('/wishlist', endpoint='wishlist')
 class Wishlist(Resource):
-    
+    @api.doc(id='get wishlist', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([g.to_dict() for g in user.games if not g.purchased], 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='add game to wishlist', security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -124,19 +106,7 @@ class Wishlist(Resource):
     
 @api.route('/wishlist/<int:id>', endpoint='wishlist_by_id')
 class WishlistByID(Resource):
-    @jwt_required()
-    def patch(self, id):
-        data = request.get_json()
-        game = Game.query.filter_by(id=id).first()
-        if not game or game.purchased:
-            return make_response({'error': 'Game not in wishlist'}, 404)
-        
-        for key, value in data.items():
-            setattr(game, key, value)
-        db.session.add(game)
-        db.session.commit()
-        return make_response(game.to_dict(), 200, {'Content-Type': 'application/json'})
-    
+    @api.doc(id='delete game from wishlist', params={'id': 'API Game ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def delete(self, id):
         game = Game.query.filter_by(api_game_id = id).first()
@@ -148,11 +118,13 @@ class WishlistByID(Resource):
     
 @api.route('/library', endpoint='library')
 class Library(Resource):
+    @api.doc(id='get games in Library', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([g.to_dict() for g in user.games if g.purchased], 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='add game to library', security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def post(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
@@ -174,19 +146,7 @@ class Library(Resource):
         
 @api.route('/library/<int:id>', endpoint='id')
 class LibraryByID(Resource):
-    @jwt_required()
-    def patch(self, id):
-        data = request.get_json()
-        game = Game.query.filter_by(id=id).first()
-        if not game or not game.purchased:
-            return make_response({'error': 'Game not in library'}, 404)
-        
-        for key, value in data.items():
-            setattr(game, key, value)
-        db.session.add(game)
-        db.session.commit()
-        return make_response(game.to_dict(), 200, {'Content-Type': 'application/json'})
-    
+    @api.doc(id='delete game from library', params={'id': 'Game ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'Not Found'})
     @jwt_required()
     def delete(self, id):
         game = Game.query.filter_by(id=id).first()
@@ -199,12 +159,13 @@ class LibraryByID(Resource):
     
 @api.route('/orders', endpoint='orders')
 class Orders(Resource):
-    
+    @api.doc(id='get orders', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([o.to_dict() for o in user.orders], 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='create order', security='Bearer', responses={'201': 'Success', '400': 'Bad Request', '404': 'Cart not found'})
     @jwt_required()
     def post(self):
         # data = request.get_json()
@@ -228,47 +189,18 @@ class Orders(Resource):
         
 @api.route('/orders/<int:order_id>', endpoint='order')
 class OrderByID(Resource):
-    
+    @api.doc(id='get order', params={'order_id': 'Order ID'}, security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'Order not found'})
     @jwt_required()
     def get(self, order_id):
         order = Order.query.filter_by(id=order_id).first()
         if not order:
             return make_response({'error': 'Order not found'}, 404)
         return make_response(order.to_dict(), 200, {'Content-Type': 'application/json'})
-        
-    @jwt_required()
-    def delete(self, order_id):
-        order = Order.query.filter_by(id=order_id).first()
-        if not order:
-            return make_response({'error': 'Order not found'}, 404)
-        db.session.delete(order)
-        db.session.commit()
-        return make_response(order.to_dict(), 200, {'Content-Type': 'application/json'})
-    
-    @jwt_required()
-    def patch(self, order_id):
-        data = request.get_json()
-        order = Order.query.filter_by(id=order_id).first()
-        if not order:
-            return make_response({'error': 'Order not found'}, 404)
-        for attr in data:
-            setattr(order, attr, data[attr])
-        db.session.add(order)
-        db.session.commit()
-        return make_response(order.to_dict(), 200, {'Content-Type': 'application/json'})
-    
-@api.route('/orders/<int:order_id>/items', endpoint='order_items')
-class OrderItems(Resource):
-    @jwt_required()
-    def get(self, order_id):
-        order = Order.query.filter_by(id=order_id).first()
-        if not order:
-            return make_response({'error': 'Order not found'}, 404)
-        return make_response([o.to_dict() for o in order.order_items], 200, {'Content-Type': 'application/json'})
-        
+          
     
 @api.route('/games', endpoint='games')
 class Games(Resource):
+    @api.doc(id='get games', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
@@ -276,6 +208,7 @@ class Games(Resource):
     
 @api.route('/check_login', endpoint='check_login')
 class CheckLogin(Resource):
+    @api.doc(id='check login', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
@@ -285,6 +218,7 @@ class CheckLogin(Resource):
     
 @api.route('/cart', endpoint='cart')
 class Cart(Resource):
+    @api.doc(id='get cart', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         cart = Order.query.filter_by(status='pending').first()
@@ -293,6 +227,7 @@ class Cart(Resource):
         
         return make_response([g.to_dict() for g in cart.order_items], 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='add game to cart', security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def post(self):
         data = request.get_json()
@@ -319,6 +254,7 @@ class Cart(Resource):
 
 @api.route('/cart/<int:id>', endpoint='cart_by_id')
 class CartByID(Resource):
+    @api.doc(id='delete game from cart', params={'id': 'Item ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     def delete(self, id):
         cart = Order.query.filter_by(status='pending').first()
         if not cart:
@@ -332,12 +268,13 @@ class CartByID(Resource):
     
 @api.route('/me', endpoint='me')
 class Me(Resource):
-    
+    @api.doc(id='get logged in user', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='update logged in user', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def patch(self):
         data = request.get_json()
@@ -355,11 +292,13 @@ class Me(Resource):
     
 @api.route('/friends', endpoint='friends')
 class Friends(Resource):
+    @api.doc(id='get friends', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([f.to_dict() for f in user.friends], 200, {'Content-Type': 'application/json'})
     
+    @api.doc(id='add friend', security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def post(self):
         data = request.get_json()
