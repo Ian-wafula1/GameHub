@@ -10,14 +10,12 @@ import { AppContext } from '../context/AppContext';
 import fetchSaved from '../utils/fetchSaved';
 import fetchTop from '../utils/fetchTop';
 // import vid from '../assets/video1.mp4'
-import { ToastContainer, toast } from 'react-toastify';
 import vid from '../assets/video2.mp4';
 
 export default function Home() {
 	const navigate = useNavigate();
 	const { setGames, setTitle } = useContext(AppContext);
 // dark toast
-	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
 
 	async function fetchRandomGame() {
 		let res = await axios.get(`https://api.rawg.io/api/games?page_size=1&page=${Math.floor(Math.random() * 100000) + 1}&key=6c8e0c847dd14ebd88f23676a432f0fa`);
@@ -40,12 +38,10 @@ export default function Home() {
 	return (
 		<>
 		{/* color prop */}
-			<button onClick={() => notify('Hello there')}>Click me</button>
 			<video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
 				<source src={vid} type="video/mp4" />
 				Your browser does not support the video tag.
 			</video>
-			<ToastContainer />
 			<div className="flex flex-col gap-[2rem] items-center *:flex *:flex-col lg:flex-row m-6 lg:justify-between lg:m-10 lg:mt-16">
 				<div className=" *:bg-[#ffffff33] *:text-white *:text-lg *:font-semibold *:backdrop-blur-[17px] *:rounded-3xl *:p-6 gap-5 max-w-[550px] ">
 					<div className="flex flex-col gap-4 items-center">
