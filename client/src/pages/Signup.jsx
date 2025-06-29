@@ -4,12 +4,16 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import vid from '../assets/video1.mp4';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Signup() {
 
     const navigate = useNavigate()
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	return (
 		<>
+        <ToastContainer />
         <video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
                         <source src={vid} type="video/mp4" />
                         Your browser does not support the video tag.
@@ -40,12 +44,10 @@ export default function Signup() {
                         age: values.age,
                         gender: values.gender,
                         password: values.password,
-                    }).then(res => {
-                        console.log(res)
+                    }).then(() => {
                         navigate('/login')
-                    }).catch(err => console.log(err))
+                    }).catch(err => notify(err.message))
                     setSubmitting(false);
-                    // axios.get('/api/users').then(res=> console.log(res))
 				}}>
                     <Form className='flex flex-col gap-2 '>
                         <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />

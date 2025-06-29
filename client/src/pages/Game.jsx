@@ -7,6 +7,7 @@ import confirmLogin from '../utils/confirmLogin';
 // import { BackArrow } from '../assets/svgCustom';
 // import {LucideArrowLeft} from 'lucide-react'
 import { BackArrow } from '../assets/svgCustom';
+import { ToastContainer, toast } from 'react-toastify';
 
 let randomPrice = getRandomPrice()
 
@@ -21,6 +22,8 @@ export default function Game() {
 	if (!id || !localStorage.getItem('token')) {
 		navigate('/login');
 	}
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 
 	const [game, setGame] = useState(null);
 	const [status, setStatus] = useState({
@@ -47,7 +50,7 @@ export default function Game() {
                     setStatus(c => ({...c, cart: true}))
 				}
 			} catch (err) {
-				console.log(err);
+				notify(err.message);
 			}
 		})();
 	}, [id, setStatus]);
@@ -58,7 +61,7 @@ export default function Game() {
 				const res = await axios.get(`https://api.rawg.io/api/games/${id}?key=6c8e0c847dd14ebd88f23676a432f0fa`);
 				setGame(res.data);
 			} catch (err) {
-				console.error(err);
+				notify(err.message);
 			}
 		})();
 	}, [id]);
@@ -91,12 +94,12 @@ export default function Game() {
 			)
 			.then((res) => {
 				if (res.status == 201) {
-					console.log(`${game.name} added to cart!`);
+					notify(`${game.name} added to cart!`);
 					// status.current.cart = true;
                     setStatus(c => ({...c, cart: true}))
 				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => notify(err.message));
         }
 		
 	}
@@ -108,13 +111,13 @@ export default function Game() {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 }
             }).then(() => {
-                console.log(`${game.name} removed from wishlist!`);
+                notify(`${game.name} removed from wishlist!`);
                 // status.current.wishlist = false;
                 setStatus(c => ({...c, wishlist: false}))
                 return
             })
 		} else if (status.purchased) {
-			console.log(`${game.name} already purchased!`);
+			notify(`${game.name} already purchased!`);
 			return;
 		} else {
             axios
@@ -132,18 +135,19 @@ export default function Game() {
 			)
 			.then((res) => {
 				if (res.status == 201) {
-					console.log(`${game.name} added to wishlist!`);
+					notify(`${game.name} added to wishlist!`);
 					// status.current.wishlist = true;
                     setStatus(c => ({...c, wishlist: true}))
 				}
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => notify(err.message));
         }
 		
 	}
 	if (game) game.price = randomPrice;
 	return (
 		<div className="p-5 text-white flex flex-col gap-3">
+			<ToastContainer />
 			<div className="flex justify-between items-center">
 				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
 					<BackArrow className="fill-gray-200 w-5 h-5" />

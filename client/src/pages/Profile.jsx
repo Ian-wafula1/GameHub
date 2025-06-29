@@ -9,6 +9,7 @@ import Modal from 'react-modal';
 import { Formik, Form } from 'formik';
 import {  MyTextInput } from '../utils/formElements';
 import * as Yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
 
 Modal.setAppElement('#root');
 Modal.defaultStyles.overlay.backgroundColor = '#00000080';
@@ -45,10 +46,11 @@ export default function Profile() {
         setIsOpen((x) => ({ ...x, model2: false }));
     }
 
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	const navigate = useNavigate();
 	const [user, setUser] = useState({});
 	const [users, setUsers] = useState([]);
-	console.log(users);
 	useEffect(() => {
 		if (!confirmLogin()) {
 			navigate('/login');
@@ -57,17 +59,15 @@ export default function Profile() {
 				.get('/api/me', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 				.then((res) => {
 					setUser(res.data);
-					console.log(res.data);
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => notify(err.message));
 
 			axios
 				.get('/api/users', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
 				.then((res) => {
 					setUsers(res.data);
-					console.log(res.data);
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => notify(err.message));
 		}
 	}, [navigate]);
 
@@ -79,16 +79,16 @@ export default function Profile() {
 	function addFriend(friend) {
 		axios
 			.post('/api/friends', { friend }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
-			.then((res) => {
-				console.log(res);
+			.then(() => {
 				setIsOpen((x) => ({ ...x, model1: false }));
 				setUser(x => ({...x, friends: [...x.friends, friend]}))
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => notify(err.message));
 	}
 
 	return (
 		<div className="text-white py-4 px-8 flex flex-col gap-4 md:grid md:grid-cols-[2fr,3fr] md:gap-x-[3rem]">
+			<ToastContainer />
 			<div className="bg-neutral-800 p-5 rounded-2xl">
 				<div className="px-8 py-10 flex flex-col items-center gap-3">
 					<div className="w-[70%] group relative ">
@@ -145,9 +145,8 @@ export default function Profile() {
                         }
                     }).then(res => {
                         setUser(res.data)
-                    }).catch(err => console.log(err))
+                    }).catch(err => notify(err.message))
                     setSubmitting(false);
-                    // axios.get('/api/users').then(res=> console.log(res))
 				}}>
                     <Form className='flex flex-col gap-2 '>
                         <MyTextInput label='Username' name='username' type='text' placeholder='johnDoeDaGreat' />

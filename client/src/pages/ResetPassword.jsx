@@ -4,11 +4,15 @@ import { MyCheckbox, MySelect, MyTextInput } from '../utils/formElements';
 import * as Yup from 'yup';
 import axios from 'axios';
 import vid from '../assets/video1.mp4';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function ResetPassword() {
 	const navigate = useNavigate();
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	return (
 		<>
+		<ToastContainer />
 		<video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
 						<source src={vid} type="video/mp4" />
 						Your browser does not support the video tag.
@@ -36,7 +40,7 @@ export default function ResetPassword() {
 						.then(() => {
 							navigate('/login');
 						})
-						.catch((error) => console.error(error))
+						.catch((error) => notify(error))
 						.finally(() => {
 							setSubmitting(false);
 						});

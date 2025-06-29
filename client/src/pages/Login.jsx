@@ -5,11 +5,15 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import vid from '../assets/video1.mp4';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Login() {
 	const navigate = useNavigate();
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	return (
 		<>
+			<ToastContainer />
 			<video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
 				<source src={vid} type="video/mp4" />
 				Your browser does not support the video tag.
@@ -36,7 +40,7 @@ export default function Login() {
 								localStorage.setItem('token', token);
 								navigate('/');
 							})
-							.catch((error) => console.error(error))
+							.catch((error) => notify(error))
 							.finally(() => {
 								setSubmitting(false);
 							});

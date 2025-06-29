@@ -9,7 +9,9 @@ import fetchSaved from '../utils/fetchSaved';
 import confirmLogin from '../utils/confirmLogin';
 import { Trophy, Crown, LibraryBig } from 'lucide-react';
 // import { Playstation, PC, XBox, Nintendo, IOS, Android, Action, Strategy, RPG, Shooter, Adventure, Puzzle, Racing, Sports } from '../assets/svgCustom';
-import { PCIcon, PlaystationIcon, XboxIcon, NintendoIcon, IOSIcon, AndroidIcon, ActionIcon, StrategyIcon, RPGIcon, ShooterIcon, AdventureIcon, PuzzleIcon, RacingIcon, SportsIcon } from '../assets/svgCustom';
+import { PCIcon, PlaystationIcon, XboxIcon, NintendoIcon, IOSIcon, AndroidIcon,
+	ActionIcon, StrategyIcon, RPGIcon, ShooterIcon, AdventureIcon,
+	 PuzzleIcon, RacingIcon, SportsIcon } from '../assets/svgCustom';
 import { useNavigate } from 'react-router-dom';
 
 // const platforms = [
@@ -88,6 +90,7 @@ export default function Store() {
 			confirmLogin() ? true : navigate('/login')
 	}, [navigate])
 	const { games, setGames, title, setTitle } = useContext(AppContext);
+
 	const [open, setOpen] = useState(false);
 	const buttons = (
 		<div className="fixed p-5 grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-[40px] h-[100%] w-[100%] overflow-auto z-10 text-black">

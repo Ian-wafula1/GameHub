@@ -4,11 +4,13 @@ import axios from 'axios';
 import confirm from '../utils/confirmLogin';
 import CircularProgress from '../components/CircularProgress';
 import { motion, useMotionValue } from 'framer-motion';
-// import vid from '../assets/video3.mov';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Checkout() {
 	confirm() ? true : navigate('/login');
 	const navigate = useNavigate();
+	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
+
 	let progress = useMotionValue(90);
 
 	const [cartItems, setCartItems] = useState([]);
@@ -24,7 +26,7 @@ export default function Checkout() {
 			.then((res) => {
 				setCartItems(res.data);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => notify(err.message));
 	}, []);
 
 	function confirmPurchase() {

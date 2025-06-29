@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import confirmLogin from '../utils/confirmLogin';
 import {ArrowRightCircle} from 'lucide-react'
 import { BackArrow } from '../assets/svgCustom';
-
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Cart() {
 	const navigate = useNavigate();
+	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+
 	useEffect(() => {
 		confirmLogin() ? true : navigate('/login');
 	}, [navigate]);
@@ -24,22 +26,21 @@ export default function Cart() {
 			.then((res) => {
 				setCartItems(res.data);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => notify(err.message));
 	}, []);
 
 	function deleteFromCart(id) {
-		console.log(id)
         axios.delete(`/api/cart/${id}`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             }
         }).then(() => {
-            // cartItems.filter((item) => item.id !== id);
 			setCartItems(c => c.filter((item) => item.id !== id))
-        }).catch((err) => console.log(err));
+        }).catch((err) => notify(err.message));
     }
 	return (
 		<div className="text-white flex flex-col gap-5 px-4">
+			<ToastContainer />
 			<div className='flex justify-between items-center'>
 				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
 					<BackArrow className="fill-gray-200 w-5 h-5" />
