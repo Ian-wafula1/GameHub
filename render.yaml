@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: gamehub-app
+    env: python
+    buildCommand: |
+      cd client && npm install && npm run build
+    startCommand: gunicorn app:app
+    workingDir: backend
+    buildFilter:
+      paths:
+        - server/**
+        - client/**
+    envVars:
+      - key: FLASK_ENV
+        value: production

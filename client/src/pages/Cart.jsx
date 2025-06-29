@@ -3,13 +3,13 @@ import axios from 'axios';
 import CartItem from '../components/CartItem';
 import { useNavigate } from 'react-router-dom';
 import confirmLogin from '../utils/confirmLogin';
-import {ArrowRightCircle} from 'lucide-react'
+import { ArrowRightCircle } from 'lucide-react';
 import { BackArrow } from '../assets/svgCustom';
 import { ToastContainer, toast } from 'react-toastify';
 
 export default function Cart() {
 	const navigate = useNavigate();
-	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
 
 	useEffect(() => {
 		confirmLogin() ? true : navigate('/login');
@@ -30,23 +30,26 @@ export default function Cart() {
 	}, []);
 
 	function deleteFromCart(id) {
-        axios.delete(`/api/cart/${id}`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-            }
-        }).then(() => {
-			setCartItems(c => c.filter((item) => item.id !== id))
-        }).catch((err) => notify(err.message));
-    }
+		axios
+			.delete(`/api/cart/${id}`, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem('token')}`,
+				},
+			})
+			.then(() => {
+				setCartItems((c) => c.filter((item) => item.id !== id));
+			})
+			.catch((err) => notify(err.message));
+	}
 	return (
 		<div className="text-white flex flex-col gap-5 px-4">
 			<ToastContainer />
-			<div className='flex justify-between items-center'>
+			<div className="flex justify-between items-center">
 				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
 					<BackArrow className="fill-gray-200 w-5 h-5" />
 					<p>Back</p>
 				</div>
-			<h1 className="text-5xl font-bold text-right">Cart</h1>
+				<h1 className="text-5xl font-bold text-right">Cart</h1>
 			</div>
 			<div className="grid grid-cols-1 md:grid-cols-5 gap-5">
 				<div className=" flex flex-col gap-4 col-span-3">
@@ -54,18 +57,16 @@ export default function Cart() {
 						return <CartItem onDelete={deleteFromCart} key={item?.id} item={item} />;
 					})}
 					{cartItems.length ? (
-						<div className='self-center flex items-center group gap-2 border-2 border-green-400 hover:bg-green-100 hover:bg-opacity-10 focus:ring-2 cursor-pointer rounded-full py-3 px-5' onClick={() => navigate('/checkout')}>
-						<p className='font-bold text-green-400 group-hover:text-white' >Proceed to checkout</p>
-						<ArrowRightCircle className='relative top-[2px]' size={20} color='#4ade80' />
-					</div>
-					)
-				:
-				(
-					<div disabled className='self-center flex items-center group gap-2 border-2 border-red-400 hover:bg-red-100 hover:bg-opacity-10 focus:ring-2 cursor-not-allowed rounded-full py-3 px-5'>
-						<p className='font-bold text-red-400 group-hover:text-white' >Cart is empty</p>
-					</div>
-				)}
-				</div>	
+						<div className="self-center flex items-center group gap-2 border-2 border-green-400 hover:bg-green-100 hover:bg-opacity-10 focus:ring-2 cursor-pointer rounded-full py-3 px-5" onClick={() => navigate('/checkout')}>
+							<p className="font-bold text-green-400 group-hover:text-white">Proceed to checkout</p>
+							<ArrowRightCircle className="relative top-[2px]" size={20} color="#4ade80" />
+						</div>
+					) : (
+						<div disabled className="self-center flex items-center group gap-2 border-2 border-red-400 hover:bg-red-100 hover:bg-opacity-10 focus:ring-2 cursor-not-allowed rounded-full py-3 px-5">
+							<p className="font-bold text-red-400 group-hover:text-white">Cart is empty</p>
+						</div>
+					)}
+				</div>
 				<div className="hidden md:flex flex-col items-center justify-center col-span-2 border-2 border-neutral-700 rounded-xl">
 					<svg
 						className={cartItems.length ? 'fill-green-500' : 'fill-red-500'}
@@ -88,7 +89,6 @@ export default function Cart() {
 						<p className="font-bold text-3xl">{cartItems.length}</p>
 					</div>
 				</div>
-				
 			</div>
 		</div>
 	);

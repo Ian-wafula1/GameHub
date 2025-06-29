@@ -50,28 +50,8 @@ export default function Checkout() {
 	}
 	return (
 		<>
-			{/* <video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
-				<source src={vid} type="video/mp4" />
-				Your browser does not support the video tag.
-			</video> */}
 			<div className="text-white py-5 px-3 grid md:grid-cols-7 gap-4">
-				{/* <div>
-				{cartItems.map((item) => {
-					return (
-						<div key={item.id}>
-							<p>{item.name}</p>
-							<p>{item.price}</p>
-						</div>
-					);
-				})}
-			</div>
-			<div>
-				<p>Total: {cartItems.reduce((acc, item) => acc + item.price, 0)}</p>
-			</div>
-			<div>
-				<button onClick={confirmPurchase}>Confirm Purchase</button>
-			</div> */}
-
+				<ToastContainer />
 				<div className="relative overflow-x-auto md:col-span-4">
 					<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 						<thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">

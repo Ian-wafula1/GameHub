@@ -8,10 +8,10 @@ import { ToastContainer, toast } from 'react-toastify';
 export default function Orders() {
 	const navigate = useNavigate();
 	useEffect(() => {
-			confirmLogin() ? true : navigate('/login')
-	}, [navigate])
+		confirmLogin() ? true : navigate('/login');
+	}, [navigate]);
 
-	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
 
 	let [orders, setOrders] = useState([]);
 
@@ -27,12 +27,12 @@ export default function Orders() {
 			})
 			.catch((err) => notify(err.message));
 	}, []);
-    orders = orders?.filter((order) => order.status !== 'pending')
+	orders = orders?.filter((order) => order.status !== 'pending');
 	return (
-		<div className='flex flex-col gap-5 text-white py-3 px-5' >
+		<div className="flex flex-col gap-5 text-white py-3 px-5">
 			<ToastContainer />
-			<h1 className='text-3xl font-bold'>Orders</h1>
-			<div className='grid gap-3 grid-cols-[repeat(auto-fill,minmax(360px,1fr))] '>
+			<h1 className="text-3xl font-bold">Orders</h1>
+			<div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(360px,1fr))] ">
 				{orders?.map((order) => {
 					return <OrderItem key={order.id} order={order} />;
 				})}

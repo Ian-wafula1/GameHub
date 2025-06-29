@@ -1,15 +1,13 @@
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import getRandomPrice from '../utils/getRandomPrice';
 import confirmLogin from '../utils/confirmLogin';
-// import { BackArrow } from '../assets/svgCustom';
-// import {LucideArrowLeft} from 'lucide-react'
 import { BackArrow } from '../assets/svgCustom';
 import { ToastContainer, toast } from 'react-toastify';
 
-let randomPrice = getRandomPrice()
+let randomPrice = getRandomPrice();
 
 export default function Game() {
 	const navigate = useNavigate();
@@ -22,8 +20,7 @@ export default function Game() {
 	if (!id || !localStorage.getItem('token')) {
 		navigate('/login');
 	}
-	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
-
+	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
 
 	const [game, setGame] = useState(null);
 	const [status, setStatus] = useState({
@@ -38,16 +35,13 @@ export default function Game() {
 				const res = await axios.get(`/api/games`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 				let game = res.data?.find((g) => g.api_game_id === id);
 				if (game) {
-					// status.current.purchased = game.purchased;
-					// status.current.wishlist = !game.purchased;
-                    setStatus(c => ({...c, wishlist: !game.purchased, purchased: game.purchased}))
+					setStatus((c) => ({ ...c, wishlist: !game.purchased, purchased: game.purchased }));
 				}
 
 				const res2 = await axios.get('/api/cart', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
 				game = res2.data?.find((g) => g.api_game_id === id);
 				if (game) {
-					// status.current.cart = true;
-                    setStatus(c => ({...c, cart: true}))
+					setStatus((c) => ({ ...c, cart: true }));
 				}
 			} catch (err) {
 				notify(err.message);
@@ -68,81 +62,80 @@ export default function Game() {
 
 	function handleCart(game) {
 		if (status.cart || status.purchased) {
-			axios.delete(`/api/cart/${game.id}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                }
-            }).then(() => {
-                setStatus(c => ({...c, cart: false}))
-                return
-            })
-		} else {
-            axios
-			.post(
-				'/api/cart',
-				{
-					api_game_id: game.id,
-					price: game.price,
-					name: game.name,
-					img_url: game.background_image,
-				},
-				{
+			axios
+				.delete(`/api/cart/${game.id}`, {
 					headers: {
 						Authorization: `Bearer ${localStorage.getItem('token')}`,
 					},
-				}
-			)
-			.then((res) => {
-				if (res.status == 201) {
-					notify(`${game.name} added to cart!`);
-					// status.current.cart = true;
-                    setStatus(c => ({...c, cart: true}))
-				}
-			})
-			.catch((err) => notify(err.message));
-        }
-		
+				})
+				.then(() => {
+					setStatus((c) => ({ ...c, cart: false }));
+					return;
+				});
+		} else {
+			axios
+				.post(
+					'/api/cart',
+					{
+						api_game_id: game.id,
+						price: game.price,
+						name: game.name,
+						img_url: game.background_image,
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem('token')}`,
+						},
+					}
+				)
+				.then((res) => {
+					if (res.status == 201) {
+						notify(`${game.name} added to cart!`);
+						setStatus((c) => ({ ...c, cart: true }));
+					}
+				})
+				.catch((err) => notify(err.message));
+		}
 	}
 
 	function handleWishlist(game) {
 		if (status.wishlist) {
-            axios.delete(`/api/wishlist/${game.id}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                }
-            }).then(() => {
-                notify(`${game.name} removed from wishlist!`);
-                // status.current.wishlist = false;
-                setStatus(c => ({...c, wishlist: false}))
-                return
-            })
+			axios
+				.delete(`/api/wishlist/${game.id}`, {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				})
+				.then(() => {
+					notify(`${game.name} removed from wishlist!`);
+					setStatus((c) => ({ ...c, wishlist: false }));
+					return;
+				});
 		} else if (status.purchased) {
 			notify(`${game.name} already purchased!`);
 			return;
 		} else {
-            axios
-			.post(
-				'/api/wishlist',
-				{
-					api_game_id: game.id,
-					name: game.name,
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem('token')}`,
+			axios
+				.post(
+					'/api/wishlist',
+					{
+						api_game_id: game.id,
+						name: game.name,
 					},
-				}
-			)
-			.then((res) => {
-				if (res.status == 201) {
-					notify(`${game.name} added to wishlist!`);
-					// status.current.wishlist = true;
-                    setStatus(c => ({...c, wishlist: true}))
-				}
-			})
-			.catch((err) => notify(err.message));
-        }
-		
+					{
+						headers: {
+							Authorization: `Bearer ${localStorage.getItem('token')}`,
+						},
+					}
+				)
+				.then((res) => {
+					if (res.status == 201) {
+						notify(`${game.name} added to wishlist!`);
+						setStatus((c) => ({ ...c, wishlist: true }));
+					}
+				})
+				.catch((err) => notify(err.message));
+		}
 	}
 	if (game) game.price = randomPrice;
 	return (
@@ -157,7 +150,6 @@ export default function Game() {
 			</div>
 			<div className="flex flex-col gap-3">
 				{' '}
-				{/* lg:h-[500px] */}
 				<img className="rounded-3xl min-w-[100%] overflow-clip object-cover  min-h-[445px " src={game?.background_image} alt={game?.name || 'Unlisted'} />
 				{status.purchased ? (
 					<div className="flex justify-between items-center  bg-neutral-800 rounded-xl py-4 px-6">
@@ -172,16 +164,16 @@ export default function Game() {
 							</button>
 						</div>
 						<div className="text-center bg-neutral-800 rounded-xl py-3 px-6">
-							<button className={'text-[1.6rem] font-bold ' + (status.wishlist? 'text-green-400' : '')} onClick={() => handleWishlist(game)}>
+							<button className={'text-[1.6rem] font-bold ' + (status.wishlist ? 'text-green-400' : '')} onClick={() => handleWishlist(game)}>
 								{status.wishlist ? 'Added to wishlist ✓' : 'Add to wishlist +'}
 							</button>
 						</div>
 					</>
 				)}
-				<div className='bg-neutral-800 rounded-xl p-6 mt-5'>
-                    <p className='font-bold text-3xl mb-2'>Description</p>
-                    <p className='text-lg font-medium text-neutral-200'>{game?.description_raw || 'Unlisted'}</p>
-                </div>
+				<div className="bg-neutral-800 rounded-xl p-6 mt-5">
+					<p className="font-bold text-3xl mb-2">Description</p>
+					<p className="text-lg font-medium text-neutral-200">{game?.description_raw || 'Unlisted'}</p>
+				</div>
 			</div>
 		</div>
 	);

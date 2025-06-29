@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
-// import getRandomPrice from '../utils/getRandomPrice';
 import GameCard from '../components/GameCard';
 import fetchPlatform from '../utils/fetchPlatform';
 import fetchGenre from '../utils/fetchGenre';
@@ -8,29 +7,8 @@ import fetchTop from '../utils/fetchTop';
 import fetchSaved from '../utils/fetchSaved';
 import confirmLogin from '../utils/confirmLogin';
 import { Trophy, Crown, LibraryBig } from 'lucide-react';
-// import { Playstation, PC, XBox, Nintendo, IOS, Android, Action, Strategy, RPG, Shooter, Adventure, Puzzle, Racing, Sports } from '../assets/svgCustom';
-import { PCIcon, PlaystationIcon, XboxIcon, NintendoIcon, IOSIcon, AndroidIcon,
-	ActionIcon, StrategyIcon, RPGIcon, ShooterIcon, AdventureIcon,
-	 PuzzleIcon, RacingIcon, SportsIcon } from '../assets/svgCustom';
+import { PCIcon, PlaystationIcon, XboxIcon, NintendoIcon, IOSIcon, AndroidIcon, ActionIcon, StrategyIcon, RPGIcon, ShooterIcon, AdventureIcon, PuzzleIcon, RacingIcon, SportsIcon } from '../assets/svgCustom';
 import { useNavigate } from 'react-router-dom';
-
-// const platforms = [
-// 	['PC', 4],
-// 	['PlayStation 5', 187],
-// 	['Xbox', 1],
-// 	['Nintendo Switch', 7],
-// 	['iOS', 3],
-// 	['Android', 21],
-// ];
-// switch variables to components
-// const platforms = [
-// 	['PC', 4, PC],
-// 	['PlayStation 5', 187, Playstation],
-// 	['Xbox', 1, XBox],
-// 	['Nintendo Switch', 7, Nintendo],
-// 	['iOS', 3, IOS],
-// 	['Android', 21, Android],
-// ];
 
 const platforms = [
 	['PC', 4, PCIcon],
@@ -39,28 +17,7 @@ const platforms = [
 	['Nintendo Switch', 7, NintendoIcon],
 	['iOS', 3, IOSIcon],
 	['Android', 21, AndroidIcon],
-]
-
-// const platforms = [
-// 	['PC', 4, <PC />],
-// 	['PlayStation 5', 187, <Playstation />],
-// 	['Xbox', 1, <XBox />],
-// 	['Nintendo Switch', 7, <Nintendo />],
-// 	['iOS', 3, <IOS />],
-// 	['Android', 21, <Android />],
-// ]
-
-// const genres = ['action', 'strategy', 'rpg', 'shooter', 'adventure', 'puzzle', 'racing', 'sports'];
-// const genres = [
-// 	['action', Action],
-// 	['strategy', Strategy],
-// 	['rpg', RPG],
-// 	['shooter', Shooter],
-// 	['adventure', Adventure],
-// 	['puzzle', Puzzle],
-// 	['racing', Racing],
-// 	['sports', Sports],
-// ];
+];
 
 const genres = [
 	['action', ActionIcon],
@@ -71,24 +28,13 @@ const genres = [
 	['puzzle', PuzzleIcon],
 	['racing', RacingIcon],
 	['sports', SportsIcon],
-]
-
-// const genres = [
-// 	['action', <Action />],
-// 	['strategy', <Strategy />],
-// 	['rpg', <RPG />],
-// 	['shooter', <Shooter />],
-// 	['adventure', <Adventure />],
-// 	['puzzle', <Puzzle />],
-// 	['racing', <Racing />],
-// 	['sports', <Sports />],
-// ]
+];
 
 export default function Store() {
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	useEffect(() => {
-			confirmLogin() ? true : navigate('/login')
-	}, [navigate])
+		confirmLogin() ? true : navigate('/login');
+	}, [navigate]);
 	const { games, setGames, title, setTitle } = useContext(AppContext);
 
 	const [open, setOpen] = useState(false);
@@ -96,36 +42,43 @@ export default function Store() {
 		<div className="fixed p-5 grid grid-cols-[repeat(auto-fit,minmax(190px,1fr))] gap-[40px] h-[100%] w-[100%] overflow-auto z-10 text-black">
 			<div>
 				<h3 className="text-[1.625rem] font-[600] mb-3 ">Top Games</h3>
-				<div className='flex flex-col gap-3'>
+				<div className="flex flex-col gap-3">
 					<div className="flex items-center gap-2">
-						<div className='bg-black w-[40px] h-[40px] grid rounded-xl'>
+						<div className="bg-black w-[40px] h-[40px] grid rounded-xl">
 							{' '}
 							<Trophy className="h-[22px] fill-white self-center justify-self-center" />
 						</div>
-						<button onClick={() => {
-							fetchTop({ setGames, setTitle })
-							setOpen(false)
-						}}>Best of all time</button>
+						<button
+							onClick={() => {
+								fetchTop({ setGames, setTitle });
+								setOpen(false);
+							}}>
+							Best of all time
+						</button>
 					</div>
 				</div>
 			</div>
 			<div>
 				<h3 className="text-[1.625rem] font-[600] mb-3 ">Your Games</h3>
-				<div className='flex flex-col gap-3'>
-					<div className="flex items-center gap-2" onClick={() => {
-						fetchSaved({ url: 'library', setGames, setTitle })
-						setOpen(false)
-					}}>
-						<div className='bg-black w-[40px] h-[40px] grid rounded-xl'>
+				<div className="flex flex-col gap-3">
+					<div
+						className="flex items-center gap-2"
+						onClick={() => {
+							fetchSaved({ url: 'library', setGames, setTitle });
+							setOpen(false);
+						}}>
+						<div className="bg-black w-[40px] h-[40px] grid rounded-xl">
 							<LibraryBig className="h-[22px] fill-white self-center justify-self-center" />
 						</div>
 						<button>Library</button>
 					</div>
-					<div className="flex items-center gap-2" onClick={() => {
-						fetchSaved({ url: 'wishlist', setGames, setTitle })
-						setOpen(false)
-					}}>
-						<div className='bg-black w-[40px] h-[40px] grid rounded-xl'>
+					<div
+						className="flex items-center gap-2"
+						onClick={() => {
+							fetchSaved({ url: 'wishlist', setGames, setTitle });
+							setOpen(false);
+						}}>
+						<div className="bg-black w-[40px] h-[40px] grid rounded-xl">
 							<Crown className="h-[22px] fill-white self-center justify-self-center" />
 						</div>
 						<button>Wishlist</button>
@@ -134,20 +87,21 @@ export default function Store() {
 			</div>
 			<div>
 				<h3 className="text-[1.625rem] font-[600] mb-3 ">Platforms</h3>
-				<div className='flex flex-col gap-3'>
+				<div className="flex flex-col gap-3">
 					{platforms.map((x) => (
 						<div className="flex items-center gap-2" key={x[0]}>
-							<div className='bg-black w-[40px] h-[40px] grid rounded-xl'>
+							<div className="bg-black w-[40px] h-[40px] grid rounded-xl">
 								{/* <x[2] /> */}
 								{(() => {
-									let Icon = x[2]
-									return <Icon className="h-[22px] fill-white self-center justify-self-center" />
+									let Icon = x[2];
+									return <Icon className="h-[22px] fill-white self-center justify-self-center" />;
 								})()}
 							</div>
-							<button  onClick={() => {
-								fetchPlatform({ platform_id: x[1], setGames, setTitle, platform: x[0] })
-								setOpen(false)
-							}}>
+							<button
+								onClick={() => {
+									fetchPlatform({ platform_id: x[1], setGames, setTitle, platform: x[0] });
+									setOpen(false);
+								}}>
 								{x[0]}
 							</button>
 						</div>
@@ -157,18 +111,20 @@ export default function Store() {
 
 			<div>
 				<h3 className="text-[1.625rem] font-[600] mb-3 ">Genres</h3>
-				<div className='flex flex-col gap-3'>
+				<div className="flex flex-col gap-3">
 					{genres.map((x) => (
 						<div className="flex items-center gap-2" key={x[0]}>
-							<div className='bg-black w-[40px] h-[40px] grid rounded-xl'> 
+							<div className="bg-black w-[40px] h-[40px] grid rounded-xl">
 								{(() => {
-									let Icon = x[1]
-									return <Icon className="h-[22px] fill-white self-center justify-self-center" />
-								})()} </div>
-							<button  onClick={() => {
-								fetchGenre({ genre_id: x[0], setGames, setTitle })
-								setOpen(false)
-							}}>
+									let Icon = x[1];
+									return <Icon className="h-[22px] fill-white self-center justify-self-center" />;
+								})()}{' '}
+							</div>
+							<button
+								onClick={() => {
+									fetchGenre({ genre_id: x[0], setGames, setTitle });
+									setOpen(false);
+								}}>
 								{x[0]}
 							</button>
 						</div>

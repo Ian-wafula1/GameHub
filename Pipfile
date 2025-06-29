@@ -17,6 +17,8 @@ gunicorn = "*"
 honcho = "*"
 flask-cors = "*"
 flask-jwt-extended = "*"
+psycopg2-binary = "*"
+importlib-metadata = "*"
 
 [dev-packages]
 

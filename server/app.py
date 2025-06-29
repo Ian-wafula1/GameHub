@@ -1,9 +1,17 @@
-from flask import Flask, jsonify, request, make_response
+from flask import Flask, jsonify, request, make_response, render_template, send_from_directory
 from flask_restx import Resource
 from config import app, db, api, jwt, generate_receipt
 from models import Game, User, Order, OrderItem, Profile
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import datetime
+
+@app.route('/')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def catch_all(path):
+    return render_template("index.html")
 
 @api.route('/login', endpoint='login')
 class Login(Resource):
@@ -313,4 +321,4 @@ class Friends(Resource):
         return make_response(friend.to_dict(), 201, {'Content-Type': 'application/json'})
     
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=5555)

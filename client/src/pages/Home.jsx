@@ -9,13 +9,11 @@ import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 import fetchSaved from '../utils/fetchSaved';
 import fetchTop from '../utils/fetchTop';
-// import vid from '../assets/video1.mp4'
 import vid from '../assets/video2.mp4';
 
 export default function Home() {
 	const navigate = useNavigate();
 	const { setGames, setTitle } = useContext(AppContext);
-// dark toast
 
 	async function fetchRandomGame() {
 		let res = await axios.get(`https://api.rawg.io/api/games?page_size=1&page=${Math.floor(Math.random() * 100000) + 1}&key=6c8e0c847dd14ebd88f23676a432f0fa`);
@@ -37,7 +35,6 @@ export default function Home() {
 
 	return (
 		<>
-		{/* color prop */}
 			<video className="fixed z-[-1] w-screen h-screen inset-0 max-w-none opacity-100 transform-none object-cover " autoPlay loop muted playsInline>
 				<source src={vid} type="video/mp4" />
 				Your browser does not support the video tag.

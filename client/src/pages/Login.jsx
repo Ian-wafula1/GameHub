@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { MyCheckbox, MySelect, MyTextInput } from '../utils/formElements';
+import { MyTextInput } from '../utils/formElements';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 export default function Login() {
 	const navigate = useNavigate();
-	const notify = (message, ...props) => toast(message, { theme: 'dark',  ...props});
+	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
 
 	return (
 		<>
