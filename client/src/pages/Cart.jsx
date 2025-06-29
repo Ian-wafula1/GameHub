@@ -37,7 +37,7 @@ export default function Cart() {
 				},
 			})
 			.then(() => {
-				setCartItems((c) => c.filter((item) => item.id !== id));
+				setCartItems((c) => c?.filter((item) => item.id !== id));
 			})
 			.catch((err) => notify(err.message));
 	}

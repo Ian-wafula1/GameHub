@@ -28,7 +28,7 @@ function showHome() {
     });
 }
 function addToCart(gameId) {
-    const game = games.find(g => g.id === gameId);
+    const game = games?.find(g => g.id === gameId);
     cart.push(game);
     localStorage.setItem('cart', JSON.stringify(cart));
     alert('${game.name} added to cart!');
