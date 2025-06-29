@@ -40,7 +40,7 @@ export default function Cart() {
     }
 	return (
 		<div className="text-white flex flex-col gap-5 px-4">
-			<div>
+			<div className='flex justify-between items-center'>
 				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
 					<BackArrow className="fill-gray-200 w-5 h-5" />
 					<p>Back</p>
