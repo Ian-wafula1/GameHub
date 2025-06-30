@@ -78,7 +78,7 @@ export default function Game() {
 					'/api/cart',
 					{
 						api_game_id: game.id,
-						price: game.price,
+						price: +game.price,
 						name: game.name,
 						img_url: game.background_image,
 					},
@@ -139,42 +139,44 @@ export default function Game() {
 	}
 	if (game) game.price = randomPrice;
 	return (
-		<div className="p-5 text-white flex flex-col gap-3">
+		<>
 			<ToastContainer />
-			<div className="flex justify-between items-center">
-				<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
-					<BackArrow className="fill-gray-200 w-5 h-5" />
-					<p>Back</p>
-				</div>
-				<h1 className="font-bold text-3xl text-right">{game?.name || 'Unlisted'}</h1>
-			</div>
-			<div className="flex flex-col gap-3">
-				{' '}
-				<img className="rounded-3xl min-w-[100%] overflow-clip object-cover  min-h-[445px " src={game?.background_image} alt={game?.name || 'Unlisted'} />
-				{status.purchased ? (
-					<div className="flex justify-between items-center  bg-neutral-800 rounded-xl py-4 px-6">
-						<p className="font-bold text-xl text-right text-green-500 m-auto">Already Purchased</p>
+			<div className="p-5 text-white flex flex-col gap-3">
+				<div className="flex justify-between items-center">
+					<div onClick={() => navigate(-1)} className="text-gray-300 font-bold flex gap-2 items-center">
+						<BackArrow className="fill-gray-200 w-5 h-5" />
+						<p>Back</p>
 					</div>
-				) : (
-					<>
-						<p className="text-xl font-semibold text-right text-green-500">${game?.price || 'Unlisted'}</p>
-						<div className="text-center  bg-neutral-800 rounded-xl py-3 px-6">
-							<button className={'text-[1.6rem] font-bold ml-auto ' + (status.cart || status.purchased ? 'text-green-400' : '')} onClick={() => handleCart(game)}>
-								{status.cart || status.purchased ? 'Added to cart ✓' : 'Add to cart +'}
-							</button>
+					<h1 className="font-bold text-3xl text-right">{game?.name || 'Unlisted'}</h1>
+				</div>
+				<div className="flex flex-col gap-3">
+					{' '}
+					<img className="rounded-3xl min-w-[100%] overflow-clip object-cover  min-h-[445px " src={game?.background_image} alt={game?.name || 'Unlisted'} />
+					{status.purchased ? (
+						<div className="flex justify-between items-center  bg-neutral-800 rounded-xl py-4 px-6">
+							<p className="font-bold text-xl text-right text-green-500 m-auto">Already Purchased</p>
 						</div>
-						<div className="text-center bg-neutral-800 rounded-xl py-3 px-6">
-							<button className={'text-[1.6rem] font-bold ' + (status.wishlist ? 'text-green-400' : '')} onClick={() => handleWishlist(game)}>
-								{status.wishlist ? 'Added to wishlist ✓' : 'Add to wishlist +'}
-							</button>
-						</div>
-					</>
-				)}
-				<div className="bg-neutral-800 rounded-xl p-6 mt-5">
-					<p className="font-bold text-3xl mb-2">Description</p>
-					<p className="text-lg font-medium text-neutral-200">{game?.description_raw || 'Unlisted'}</p>
+					) : (
+						<>
+							<p className="text-xl font-semibold text-right text-green-500">${game?.price || 'Unlisted'}</p>
+							<div className="text-center  bg-neutral-800 rounded-xl py-3 px-6">
+								<button className={'text-[1.6rem] font-bold ml-auto ' + (status.cart || status.purchased ? 'text-green-400' : '')} onClick={() => handleCart(game)}>
+									{status.cart || status.purchased ? 'Added to cart ✓' : 'Add to cart +'}
+								</button>
+							</div>
+							<div className="text-center bg-neutral-800 rounded-xl py-3 px-6">
+								<button className={'text-[1.6rem] font-bold ' + (status.wishlist ? 'text-green-400' : '')} onClick={() => handleWishlist(game)}>
+									{status.wishlist ? 'Added to wishlist ✓' : 'Add to wishlist +'}
+								</button>
+							</div>
+						</>
+					)}
+					<div className="bg-neutral-800 rounded-xl p-6 mt-5">
+						<p className="font-bold text-3xl mb-2">Description</p>
+						<p className="text-lg font-medium text-neutral-200">{game?.description_raw || 'Unlisted'}</p>
+					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }

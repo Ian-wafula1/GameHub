@@ -5,25 +5,21 @@ from models import Game, User, Order, OrderItem, Profile
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 import datetime, os
 
-@app.route('/')
-def index():
-    return send_from_directory(app.static_folder, 'index.html')
-
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    file_path = os.path.join(app.static_folder, path)
-    if os.path.exists(file_path):
-        return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+    return app.static_folder % path
+
+if __name__ == '__main__':
+    app.run()
     
 @app.errorhandler(404)
 def not_found(e):
     return send_from_directory(app.static_folder, 'index.html')
 
-@api.route('/login', endpoint='login')
+@api.route('/api/login', endpoint='api_login')
 class Login(Resource):
-    @api.doc(id='login' ,security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '401': 'Unauthorized'})
+    @api.doc(id='login', responses={'200': 'Success', '400': 'Bad Request', '401': 'Unauthorized'})
     def post(self):
         data = request.get_json()
         if not (data.get('username') and data.get('password')):
@@ -39,9 +35,9 @@ class Login(Resource):
         response.message = 'Invalid username or password'
         return response
     
-@api.route('/signup', endpoint='signup')
+@api.route('/api/signup', endpoint='api_signup')
 class Signup(Resource):
-    @api.doc(id='signup',security='Bearer', responses={'201': 'Success', '400': 'Bad Request'})
+    @api.doc(id='signup', responses={'201': 'Success', '400': 'Bad Request'})
     def post(self):
         data = request.get_json()
         
@@ -66,9 +62,9 @@ class Signup(Resource):
         db.session.commit()
         return make_response(user.to_dict(), 201, {'Content-Type': 'application/json'})
     
-@api.route('/reset_password', endpoint='reset_password')
+@api.route('/api/reset_password', endpoint='api_reset_password')
 class ResetPassword(Resource):
-    @api.doc(id='reset_password', security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'User not found'})
+    @api.doc(id='reset_password', responses={'200': 'Success', '400': 'Bad Request', '404': 'User not found'})
     def post(self):
         data = request.get_json()
         if not (data.get('username') and data.get('password') and data.get('email')):
@@ -81,17 +77,17 @@ class ResetPassword(Resource):
         db.session.commit()
         return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
     
-@api.route('/users', endpoint='users')
+@api.route('/api/users', endpoint='api_users')
 class Users(Resource):
-    @api.doc(id='users', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
+    # @api.doc(id='users', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
     def get(self):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         users = User.query.all()
-        return make_response([u.to_dict() for u in users if u != user ], 200, {'Content-Type': 'application/json'})
+        return make_response([u.to_dict() for u in users if u.username != user.username ], 200, {'Content-Type': 'application/json'})
     
     
-@api.route('/wishlist', endpoint='wishlist')
+@api.route('/api/wishlist', endpoint='api_wishlist')
 class Wishlist(Resource):
     @api.doc(id='get wishlist', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -120,7 +116,7 @@ class Wishlist(Resource):
             return make_response({'error': 'Game already in wishlist'}, 400)
         
     
-@api.route('/wishlist/<int:id>', endpoint='wishlist_by_id')
+@api.route('/api/wishlist/<int:id>', endpoint='api_wishlist_by_id')
 class WishlistByID(Resource):
     @api.doc(id='delete game from wishlist', params={'id': 'API Game ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -132,7 +128,7 @@ class WishlistByID(Resource):
         db.session.commit()
         return make_response({'message': 'Game deleted'}, 200, {'Content-Type': 'application/json'})
     
-@api.route('/library', endpoint='library')
+@api.route('/api/library', endpoint='api_library')
 class Library(Resource):
     @api.doc(id='get games in Library', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -160,7 +156,7 @@ class Library(Resource):
         else:
             return make_response({'error': 'Game already in wishlist'}, 400)
         
-@api.route('/library/<int:id>', endpoint='id')
+@api.route('/api/library/<int:id>', endpoint='api_id')
 class LibraryByID(Resource):
     @api.doc(id='delete game from library', params={'id': 'Game ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'Not Found'})
     @jwt_required()
@@ -173,7 +169,7 @@ class LibraryByID(Resource):
         db.session.commit()
         return make_response(game.to_dict(), 200, {'Content-Type': 'application/json'})
     
-@api.route('/orders', endpoint='orders')
+@api.route('/api/orders', endpoint='api_orders')
 class Orders(Resource):
     @api.doc(id='get orders', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -203,7 +199,7 @@ class Orders(Resource):
         db.session.commit()
         return make_response(cart.to_dict(), 201, {'Content-Type': 'application/json'})
         
-@api.route('/orders/<int:order_id>', endpoint='order')
+@api.route('/api/orders/<int:order_id>', endpoint='api_order')
 class OrderByID(Resource):
     @api.doc(id='get order', params={'order_id': 'Order ID'}, security='Bearer', responses={'200': 'Success', '400': 'Bad Request', '404': 'Order not found'})
     @jwt_required()
@@ -214,7 +210,7 @@ class OrderByID(Resource):
         return make_response(order.to_dict(), 200, {'Content-Type': 'application/json'})
           
     
-@api.route('/games', endpoint='games')
+@api.route('/api/games', endpoint='api_games')
 class Games(Resource):
     @api.doc(id='get games', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -222,7 +218,7 @@ class Games(Resource):
         user = User.query.filter_by(username=get_jwt_identity()).first()
         return make_response([g.to_dict() for g in user.games], 200, {'Content-Type': 'application/json'})
     
-@api.route('/check_login', endpoint='check_login')
+@api.route('/api/check_login', endpoint='api_check_login')
 class CheckLogin(Resource):
     @api.doc(id='check login', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -232,7 +228,7 @@ class CheckLogin(Resource):
             return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
         return make_response({'error': 'Token is invalid'}, 400)
     
-@api.route('/cart', endpoint='cart')
+@api.route('/api/cart', endpoint='api_cart')
 class Cart(Resource):
     @api.doc(id='get cart', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -268,7 +264,7 @@ class Cart(Resource):
         db.session.commit()
         return make_response(item.to_dict(), 201, {'Content-Type': 'application/json'})
 
-@api.route('/cart/<int:id>', endpoint='cart_by_id')
+@api.route('/api/cart/<int:id>', endpoint='api_cart_by_id')
 class CartByID(Resource):
     @api.doc(id='delete game from cart', params={'id': 'Item ID'},security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     def delete(self, id):
@@ -282,7 +278,7 @@ class CartByID(Resource):
         db.session.commit()
         return make_response({'message': 'Item deleted'}, 200, {'Content-Type': 'application/json'})
     
-@api.route('/me', endpoint='me')
+@api.route('/api/me', endpoint='api_me')
 class Me(Resource):
     @api.doc(id='get logged in user', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -306,7 +302,7 @@ class Me(Resource):
         db.session.commit()
         return make_response(user.to_dict(), 200, {'Content-Type': 'application/json'})
     
-@api.route('/friends', endpoint='friends')
+@api.route('/api/friends', endpoint='api_friends')
 class Friends(Resource):
     @api.doc(id='get friends', security='Bearer', responses={'200': 'Success', '400': 'Bad Request'})
     @jwt_required()
@@ -329,4 +325,4 @@ class Friends(Resource):
         return make_response(friend.to_dict(), 201, {'Content-Type': 'application/json'})
     
 if __name__ == '__main__':
-    app.run(port=5555)
+    app.run(port=5555, debug=True)

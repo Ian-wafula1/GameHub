@@ -8,7 +8,6 @@ export default async function fetchSaved({ url, setGames, setTitle }) {
 		},
 	});
 	games = games.data;
-	console.log(games);
 	let fetchedGames = [];
 	games.forEach((game) => {
 		axios

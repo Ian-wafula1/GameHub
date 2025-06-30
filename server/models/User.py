@@ -18,7 +18,7 @@ class User(db.Model, SerializerMixin):
     orders = db.relationship('Order', back_populates='user', lazy=True, cascade='all, delete-orphan')
     friends = db.relationship('User', secondary=friends, primaryjoin=id==friends.c.user_id, secondaryjoin=id==friends.c.friend_id)
     
-    serialize_rules = ('-games.user', '-orders.user', '-profile.user', '-friends')
+    serialize_rules = ('-games.user', '-orders.user', '-profile.user', '-friends.friends')
     
     @hybrid_property
     def password_hash(self):

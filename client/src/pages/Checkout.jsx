@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import confirm from '../utils/confirmLogin';
 import CircularProgress from '../components/CircularProgress';
 import { motion, useMotionValue } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
+import confirmLogin from '../utils/confirmLogin';
 
 export default function Checkout() {
-	confirm() ? true : navigate('/login');
 	const navigate = useNavigate();
 	const notify = (message, ...props) => toast(message, { theme: 'dark', ...props });
 
@@ -17,17 +16,20 @@ export default function Checkout() {
 	const [confirmed, setConfirmed] = useState(false);
 
 	useEffect(() => {
-		axios
-			.get('/api/cart', {
-				headers: {
-					Authorization: `Bearer ${localStorage.getItem('token')}`,
-				},
-			})
-			.then((res) => {
-				setCartItems(res.data);
-			})
-			.catch((err) => notify(err.message));
-	}, []);
+		if (!confirmLogin()) navigate('/login');
+		else {
+			axios
+				.get('/api/cart', {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				})
+				.then((res) => {
+					setCartItems(res.data);
+				})
+				.catch((err) => notify(err.message));
+		}
+	}, [navigate]);
 
 	function confirmPurchase() {
 		if (!cartItems.length) return;
@@ -50,9 +52,9 @@ export default function Checkout() {
 	}
 	return (
 		<>
+			<ToastContainer />
 			<div className="text-white py-5 px-3 grid md:grid-cols-7 gap-4">
-				<ToastContainer />
-				<div className="relative overflow-x-auto md:col-span-4">
+				<div className="relative overflow-x-auto md:col-span-4 md:col-start-1">
 					<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 						<thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
 							<tr>
