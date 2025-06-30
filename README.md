@@ -12,11 +12,11 @@
 
 ## 📦 Tech Stack
 
-| Frontend           | Backend        | Auth & API             | Database      |
+| Frontend           | Backend        | Auth & API              | Database      |
 |--------------------|----------------|-------------------------|---------------|
 | Vite + React       | Flask (Python) | JWT Authentication      | SQLAlchemy    |
-| React Router DOM   | Flask-Restful  | Flask-JWT-Extended      | PostgreSQL    |
-| Tailwind CSS       | Marshmallow    | Password Reset via Token| Flask-Migrate |
+| React Router DOM   | Flask-RestX    | Flask-JWT-Extended      | PostgreSQL    |
+| Tailwind CSS       | Flask-Migrate  | Password Reset via Token| Flask-Migrate |
 
 ---
 
@@ -49,6 +49,9 @@
 
 ### `OrderItem`
 - `id`, `order_id`, `api_game_id`, `quantity`, `price_at_purchase`
+
+### `Profile`
+- `id`, `user_id`, `bio`, `avatar_url`
 
 ---
 
